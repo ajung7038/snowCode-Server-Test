@@ -23,7 +23,7 @@ public class MemberController {
 
     @GetMapping("/me/{memberId}")
     public BasicResponse<MemberResponse> findMember(@PathVariable long memberId) {
-        MemberResponse memberResponse = memberService.findMember(memberId);
+        MemberResponse memberResponse = memberService.findMemberById(memberId);
         return ResponseUtil.success(memberResponse);
     }
 }

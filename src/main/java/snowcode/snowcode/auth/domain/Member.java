@@ -17,22 +17,20 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(nullable = false)
-//    private Role role;
-
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     private int studentId;
     private String email;
 
-    private Member(String name, String role, String email) {
+    private Member(String name, Role role, String email) {
         this.name = name;
         this.role = role;
         this.email = email;
     }
 
-    public static Member createMember(String name, String role, String email) {
+    public static Member createMember(String name, Role role, String email) {
         return new Member(name, role, email);
     }
 }
