@@ -2,6 +2,7 @@ package snowcode.snowcode.auth.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import snowcode.snowcode.auth.dto.MemberCountListResponse;
 import snowcode.snowcode.auth.dto.MemberRequest;
 import snowcode.snowcode.auth.dto.MemberResponse;
 import snowcode.snowcode.auth.dto.MyProfileResponse;
@@ -26,5 +27,11 @@ public class MemberController {
     public BasicResponse<MyProfileResponse> findMember(@PathVariable Long memberId) {
         MyProfileResponse myProfileResponse = memberService.findMemberById(memberId);
         return ResponseUtil.success(myProfileResponse);
+    }
+
+    @GetMapping
+    public BasicResponse<MemberCountListResponse> findAllMember() {
+        MemberCountListResponse rp = memberService.findAllMember();
+        return ResponseUtil.success(rp);
     }
 }
