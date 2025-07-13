@@ -43,4 +43,10 @@ public class Unit extends BaseTimeEntity {
     public static Unit createUnit(String title, LocalDate releaseDate, LocalDate dueDate, Course course) {
         return new Unit(title, releaseDate, dueDate, course);
     }
+
+    public void updateUnit(String title, LocalDate releaseDate, LocalDate dueDate) {
+        this.title = title;
+        this.releaseDate = releaseDate;
+        this.dueDate = dueDate;
+    }
 }

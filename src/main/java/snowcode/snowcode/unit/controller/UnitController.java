@@ -31,4 +31,10 @@ public class UnitController {
         UnitResponse unit = unitService.findById(unitId);
         return ResponseUtil.success(unit);
     }
+
+    @PutMapping("/{unitId}")
+    public BasicResponse<UnitResponse> updateUnit(@PathVariable Long unitId, @Valid @RequestBody UnitRequest dto) {
+        UnitResponse unit = unitService.updateUnit(unitId, dto);
+        return ResponseUtil.success(unit);
+    }
 }

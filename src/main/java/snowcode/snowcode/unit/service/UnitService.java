@@ -38,4 +38,15 @@ public class UnitService {
     public UnitResponse findById(Long id) {
         return UnitResponse.from(findUnit(id));
     }
+
+    @Transactional
+    public UnitResponse updateUnit(Long unitId, UnitRequest dto) {
+        Unit unit = findUnit(unitId);
+
+        LocalDate releaseDate = DateTimeConverter.stringToDate(dto.releaseDate());
+        LocalDate dueDate = DateTimeConverter.stringToDate(dto.dueDate());
+
+        unit.updateUnit(dto.title(), releaseDate, dueDate);
+        return UnitResponse.from(unit);
+    }
 }
