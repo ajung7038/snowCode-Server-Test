@@ -25,4 +25,10 @@ public class UnitController {
         UnitResponse unit = unitService.createUnit(course, dto);
         return ResponseUtil.success(unit);
     }
+
+    @GetMapping("/{unitId}")
+    public BasicResponse<UnitResponse> findUnit(@PathVariable Long unitId) {
+        UnitResponse unit = unitService.findById(unitId);
+        return ResponseUtil.success(unit);
+    }
 }

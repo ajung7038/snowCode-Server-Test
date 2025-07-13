@@ -8,6 +8,8 @@ import snowcode.snowcode.course.domain.Course;
 import snowcode.snowcode.unit.domain.Unit;
 import snowcode.snowcode.unit.dto.UnitRequest;
 import snowcode.snowcode.unit.dto.UnitResponse;
+import snowcode.snowcode.unit.exception.UnitErrorCode;
+import snowcode.snowcode.unit.exception.UnitException;
 import snowcode.snowcode.unit.repository.UnitRepository;
 
 import java.time.LocalDate;
@@ -26,5 +28,14 @@ public class UnitService {
         Unit unit = Unit.createUnit(dto.title(), releaseDate, dueDate, course);
         unitRepository.save(unit);
         return UnitResponse.from(unit);
+    }
+
+    public Unit findUnit(Long id) {
+        return unitRepository.findById(id).orElseThrow(
+                () -> new UnitException(UnitErrorCode.UNIT_NOT_FOUND));
+    }
+
+    public UnitResponse findById(Long id) {
+        return UnitResponse.from(findUnit(id));
     }
 }
