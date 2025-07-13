@@ -29,6 +29,11 @@ public class CourseService {
         return CourseResponse.from(course);
     }
 
+    public Course findCourse(Long id) {
+        return courseRepository.findById(id).orElseThrow(
+                () -> new CourseException(CourseErrorCode.COURSE_NOT_FOUND));
+    }
+
     @Transactional
     public CourseResponse updateCourse(Long id, CourseRequest dto) {
         Course course = findCourse(id);
@@ -40,8 +45,9 @@ public class CourseService {
         return CourseResponse.from(course);
     }
 
-    public Course findCourse(Long id) {
-        return courseRepository.findById(id).orElseThrow(
-                () -> new CourseException(CourseErrorCode.COURSE_NOT_FOUND));
+    @Transactional
+    public void deleteCourse(Long id) {
+        Course course = findCourse(id);
+        courseRepository.delete(course);
     }
 }

@@ -26,4 +26,10 @@ public class CourseController {
         CourseResponse course = courseService.updateCourse(id, dto);
         return ResponseUtil.success(course);
     }
+
+    @DeleteMapping("/{id}")
+    public BasicResponse<String> deleteCourse(@PathVariable Long id) {
+        courseService.deleteCourse(id);
+        return ResponseUtil.success("강의 삭제에 성공하였습니다.");
+    }
 }
