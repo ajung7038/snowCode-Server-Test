@@ -4,11 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignment.domain.Assignment;
+import snowcode.snowcode.assignment.dto.AssignmentCountListResponse;
+import snowcode.snowcode.assignment.dto.AssignmentListResponse;
 import snowcode.snowcode.assignment.dto.AssignmentRequest;
 import snowcode.snowcode.assignment.dto.AssignmentResponse;
 import snowcode.snowcode.assignment.exception.AssignmentErrorCode;
 import snowcode.snowcode.assignment.exception.AssignmentException;
 import snowcode.snowcode.assignment.repository.AssignmentRepository;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +36,13 @@ public class AssignmentService {
         return assignmentRepository.findById(id).orElseThrow(
                 () -> new AssignmentException(AssignmentErrorCode.ASSIGNMENT_NOT_FOUND)
         );
+    }
+
+    public AssignmentCountListResponse findAllAssignment() {
+        List<AssignmentListResponse> lst = assignmentRepository.findAll().stream()
+                .map(AssignmentListResponse::from)
+                .toList();
+        return new AssignmentCountListResponse(lst.size(), lst);
     }
 
     @Transactional

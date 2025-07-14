@@ -3,6 +3,7 @@ package snowcode.snowcode.assignment.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import snowcode.snowcode.assignment.dto.AssignmentCountListResponse;
 import snowcode.snowcode.assignment.dto.AssignmentRequest;
 import snowcode.snowcode.assignment.dto.AssignmentResponse;
 import snowcode.snowcode.assignment.service.AssignmentService;
@@ -26,6 +27,12 @@ public class AssignmentController {
     public BasicResponse<AssignmentResponse> findAssignment(@PathVariable Long assignmentId) {
         AssignmentResponse assignment = assignmentService.findAssignment(assignmentId);
         return ResponseUtil.success(assignment);
+    }
+
+    @GetMapping
+    public BasicResponse<AssignmentCountListResponse> findAllAssignment() {
+        AssignmentCountListResponse assignments = assignmentService.findAllAssignment();
+        return ResponseUtil.success(assignments);
     }
 
     @PutMapping("/{assignmentId}")
