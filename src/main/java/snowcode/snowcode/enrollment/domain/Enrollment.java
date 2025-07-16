@@ -14,6 +14,7 @@ import snowcode.snowcode.course.domain.Course;
 public class Enrollment extends BaseTimeEntity {
 
     @Id @Column(name = "enrollment_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, name = "total_score")
