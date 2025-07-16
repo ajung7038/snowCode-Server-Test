@@ -35,7 +35,7 @@ public class CourseController {
 
     @DeleteMapping("/{id}")
     public BasicResponse<String> deleteCourse(@PathVariable Long id) {
-        courseService.deleteCourse(id);
+        courseRegistrationFacade.deleteCourseAndEnrollment(id);
         return ResponseUtil.success("강의 삭제에 성공하였습니다.");
     }
 }
