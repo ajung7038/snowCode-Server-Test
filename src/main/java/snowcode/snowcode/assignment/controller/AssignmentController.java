@@ -6,7 +6,10 @@ import org.springframework.web.bind.annotation.*;
 import snowcode.snowcode.assignment.dto.AssignmentCountListResponse;
 import snowcode.snowcode.assignment.dto.AssignmentRequest;
 import snowcode.snowcode.assignment.dto.AssignmentResponse;
+import snowcode.snowcode.assignment.service.AssignmentRegistrationFacade;
 import snowcode.snowcode.assignment.service.AssignmentService;
+import snowcode.snowcode.auth.domain.Member;
+import snowcode.snowcode.auth.service.MemberService;
 import snowcode.snowcode.common.response.BasicResponse;
 import snowcode.snowcode.common.response.ResponseUtil;
 
@@ -16,6 +19,8 @@ import snowcode.snowcode.common.response.ResponseUtil;
 public class AssignmentController {
 
     private final AssignmentService assignmentService;
+    private final AssignmentRegistrationFacade assignmentRegistrationFacade;
+    private final MemberService memberService;
 
     @PostMapping
     public BasicResponse<AssignmentResponse> createAssignment(@Valid @RequestBody AssignmentRequest dto) {
@@ -43,7 +48,7 @@ public class AssignmentController {
 
     @DeleteMapping("/{assignmentId}")
     public BasicResponse<String> deleteAssignment(@PathVariable Long assignmentId) {
-        assignmentService.deleteAssignment(assignmentId);
+        assignmentRegistrationFacade.deleteAssignmentWithSubmission(assignmentId);
         return ResponseUtil.success("과제 삭제에 성공하였습니다.");
     }
 }
