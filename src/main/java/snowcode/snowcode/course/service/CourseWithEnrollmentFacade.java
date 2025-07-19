@@ -15,14 +15,13 @@ import snowcode.snowcode.enrollment.service.EnrollmentService;
 import snowcode.snowcode.unit.service.UnitService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class CourseRegistrationFacade {
+public class CourseWithEnrollmentFacade {
 
     private final CourseService courseService;
     private final EnrollmentService enrollmentService;
