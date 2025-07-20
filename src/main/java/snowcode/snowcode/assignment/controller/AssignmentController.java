@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import snowcode.snowcode.assignment.dto.*;
 import snowcode.snowcode.assignment.service.AssignmentRegistrationFacade;
+import snowcode.snowcode.assignment.service.AssignmentScheduleService;
 import snowcode.snowcode.assignment.service.AssignmentService;
 import snowcode.snowcode.common.response.BasicResponse;
 import snowcode.snowcode.common.response.ResponseUtil;
@@ -21,6 +22,7 @@ public class AssignmentController {
     private final AssignmentService assignmentService;
     private final AssignmentRegistrationFacade assignmentRegistrationFacade;
     private final UnitService unitService;
+    private final AssignmentScheduleService assignmentScheduleService;
 
     @PostMapping("{unitId}")
     public BasicResponse<AssignmentResponse> createAssignment(@PathVariable Long unitId, @Valid @RequestBody AssignmentRequest dto) {
@@ -35,6 +37,10 @@ public class AssignmentController {
         return ResponseUtil.success(assignment);
     }
 
+    // /assignments/{assignmentId}/info
+//    @GetMapping("/{assignmentId}/info")
+//    public BasicResponse<>
+
     @GetMapping
     public BasicResponse<AssignmentCountListResponse> findAllAssignment() {
         AssignmentCountListResponse assignments = assignmentService.findAllAssignment();
@@ -43,7 +49,7 @@ public class AssignmentController {
 
     @GetMapping("/{memberId}/schedule")
     public BasicResponse<AssignmentScheduleResponse> listUpMySchedule(@PathVariable Long memberId) {
-        AssignmentScheduleResponse assignments = assignmentService.listUpMySchedule(memberId);
+        AssignmentScheduleResponse assignments = assignmentScheduleService.listUpMySchedule(memberId);
         return ResponseUtil.success(assignments);
     }
 
