@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignment.domain.Assignment;
+import snowcode.snowcode.assignment.dto.AssignmentDetailAdminResponse;
 import snowcode.snowcode.assignment.dto.AssignmentDetailStudentResponse;
 import snowcode.snowcode.assignment.service.AssignmentService;
 import snowcode.snowcode.submission.domain.Submission;
@@ -23,6 +24,11 @@ public class SubmissionWithAssignmentFacade {
         Assignment assignment = assignmentService.findById(assignmentId);
         String status = getSubmissionStatus(memberId, assignment).toString();
         return new AssignmentDetailStudentResponse(assignmentId, assignment.getTitle(), status);
+    }
+
+    public AssignmentDetailAdminResponse createAdminAssignmentResponse(Long memberId, Long assignmentId) {
+        Assignment assignment = assignmentService.findById(assignmentId);
+        return new AssignmentDetailAdminResponse(assignmentId, assignment.getTitle());
     }
 
     private SubmissionStatus getSubmissionStatus(Long memberId, Assignment assignment) {

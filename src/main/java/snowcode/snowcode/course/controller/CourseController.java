@@ -4,16 +4,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import snowcode.snowcode.auth.domain.Member;
+import snowcode.snowcode.auth.domain.Role;
 import snowcode.snowcode.auth.service.MemberService;
 import snowcode.snowcode.common.response.BasicResponse;
 import snowcode.snowcode.common.response.ResponseUtil;
-import snowcode.snowcode.course.dto.CourseCountListResponse;
-import snowcode.snowcode.course.dto.CourseDetailStudentResponse;
-import snowcode.snowcode.course.dto.CourseRequest;
-import snowcode.snowcode.course.dto.CourseResponse;
+import snowcode.snowcode.course.dto.*;
 import snowcode.snowcode.course.service.CourseWithEnrollmentFacade;
 import snowcode.snowcode.course.service.CourseService;
-import snowcode.snowcode.course.service.CourseWithStudentFacade;
+import snowcode.snowcode.course.service.CourseWithMemberFacade;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,7 +20,7 @@ public class CourseController {
     private final CourseService courseService;
     private final CourseWithEnrollmentFacade courseWithEnrollmentFacade;
     private final MemberService memberService;
-    private final CourseWithStudentFacade courseWithStudentFacade;
+    private final CourseWithMemberFacade courseWithMemberFacade;
 
     @PostMapping("/{memberId}")
     public BasicResponse<CourseResponse> createCourse(@PathVariable Long memberId, @Valid @RequestBody CourseRequest dto) {
@@ -50,8 +48,14 @@ public class CourseController {
     }
 
     @GetMapping("/{memberId}/{courseId}")
-    public BasicResponse<CourseDetailStudentResponse> findCourse(@PathVariable Long memberId, @PathVariable Long courseId) {
-        CourseDetailStudentResponse course = courseWithStudentFacade.createStudentCourseResponse(memberId, courseId);
-        return ResponseUtil.success(course);
+    public BasicResponse<?> findCourse(@PathVariable Long memberId, @PathVariable Long courseId) {
+        Member member = memberService.findMember(memberId);
+        if (member.getRole().equals(Role.ADMIN)) {
+            CourseDetailAdminResponse course = courseWithMemberFacade.createAdminCourseResponse(memberId, courseId);
+            return ResponseUtil.success(course);
+        } else {
+            CourseDetailStudentResponse course = courseWithMemberFacade.createStudentCourseResponse(memberId, courseId);
+            return ResponseUtil.success(course);
+        }
     }
 }
