@@ -12,6 +12,8 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     void deleteByCourseId(Long courseId);
     List<Enrollment> findAllByMemberId(Long memberId);
 
+    List<Enrollment> findAllByCourseId(Long courseId);
+
     // TODO - STUDY
     @Query("SELECT e.member.id FROM Enrollment e WHERE e.member.id IN :memberIds AND e.course.id = :courseId")
     List<Long> findAlreadyEnrolledMemberIds(@Param("memberIds") List<Long> memberIds, @Param("courseId") Long courseId);

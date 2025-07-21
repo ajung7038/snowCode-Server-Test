@@ -29,5 +29,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
                 AND s.member.id =:memberId
             )
             """)
-    List<Object[]> findUnsubmittedAssignmentsWithinWeek(@Param("memberId") Long memberId, @Param("today")LocalDate today, @Param("endDate") LocalDate endDate);
+    List<Object[]> findUnsubmittedAssignmentsWithinWeek(@Param("memberId") Long memberId, @Param("today") LocalDate today, @Param("endDate") LocalDate endDate);
+
+    List<Assignment> findAllByUnitId(@Param("unitId") Long unitId);
 }
