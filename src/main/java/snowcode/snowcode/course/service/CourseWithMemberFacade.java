@@ -22,6 +22,7 @@ public class CourseWithMemberFacade {
     private final CourseService courseService;
     private final UnitService unitService;
     private final UnitWithAssignmentFacade unitWithAssignmentFacade;
+    private final CourseWithEnrollmentFacade courseWithEnrollmentFacade;
 
     public CourseDetailStudentResponse createStudentCourseResponse(Long memberId, Long courseId) {
         Course course = courseService.findCourse(courseId);
@@ -54,13 +55,15 @@ public class CourseWithMemberFacade {
             unitDtoList.add(unitWithAssignmentFacade.createAdminUnitResponse(unit.getId()));
         }
 
+        int size = courseWithEnrollmentFacade.findNonAdminByCourseId(courseId).size();
+
         return new CourseDetailAdminResponse(
                 courseId,
                 course.getName(),
                 course.getYear(),
                 course.getSemester().toString(),
                 course.getSection(),
-                0,
+                size,
                 unitDtoList.size(),
                 unitDtoList
         );

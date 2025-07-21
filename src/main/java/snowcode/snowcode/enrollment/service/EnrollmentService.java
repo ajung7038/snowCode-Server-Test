@@ -60,6 +60,11 @@ public class EnrollmentService {
     }
 
     @Transactional(readOnly = true)
+    public List<Enrollment> findByCourseId(Long courseId) {
+        return enrollmentRepository.findAllByCourseId(courseId);
+    }
+
+    @Transactional(readOnly = true)
     public List<Course> findCoursesByEnrollment(List<Enrollment> enrollments) {
         return enrollments.stream()
                 .map(Enrollment::getCourse)

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignment.service.AssignmentService;
 import snowcode.snowcode.auth.domain.Member;
+import snowcode.snowcode.auth.domain.Role;
 import snowcode.snowcode.course.domain.Course;
 import snowcode.snowcode.course.dto.CourseCountListResponse;
 import snowcode.snowcode.course.dto.CourseListResponse;
@@ -61,5 +62,17 @@ public class CourseWithEnrollmentFacade {
             dtoList.add(CourseListResponse.create(course, unitCount, assignmentCount));
         }
         return new CourseCountListResponse(dtoList.size(), dtoList);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Member> findNonAdminByCourseId(Long courseId) {
+        List<Enrollment> enrollmentList = enrollmentService.findByCourseId(courseId);
+        List<Member> members = new ArrayList<>();
+
+        for (Enrollment e : enrollmentList) {
+            Member member = e.getMember();
+            if (!member.getRole().equals(Role.ADMIN)) members.add(member);
+        }
+        return members;
     }
 }
