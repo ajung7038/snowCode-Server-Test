@@ -24,13 +24,13 @@ public class UnitService {
     private final UnitRepository unitRepository;
 
     @Transactional
-    public UnitResponse createUnit(Course course, UnitRequest dto) {
+    public Unit createUnit(Course course, UnitRequest dto) {
         LocalDate releaseDate = DateTimeConverter.stringToDate(dto.releaseDate());
         LocalDate dueDate = DateTimeConverter.stringToDate(dto.dueDate());
 
         Unit unit = Unit.createUnit(dto.title(), releaseDate, dueDate, course);
         unitRepository.save(unit);
-        return UnitResponse.from(unit);
+        return unit;
     }
 
     public Unit findUnit(Long id) {

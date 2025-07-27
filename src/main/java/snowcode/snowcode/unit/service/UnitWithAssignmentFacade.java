@@ -6,13 +6,12 @@ import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignment.domain.Assignment;
 import snowcode.snowcode.assignment.dto.AssignmentDetailAdminResponse;
 import snowcode.snowcode.assignment.dto.AssignmentDetailStudentResponse;
+import snowcode.snowcode.assignment.service.AssignmentService;
 import snowcode.snowcode.assignmentRegistration.service.RegistrationService;
+import snowcode.snowcode.course.domain.Course;
 import snowcode.snowcode.submission.service.SubmissionWithAssignmentFacade;
 import snowcode.snowcode.unit.domain.Unit;
-import snowcode.snowcode.unit.dto.UnitCountListResponse;
-import snowcode.snowcode.unit.dto.UnitDetailAdminResponse;
-import snowcode.snowcode.unit.dto.UnitDetailStudentResponse;
-import snowcode.snowcode.unit.dto.UnitListResponse;
+import snowcode.snowcode.unit.dto.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,15 @@ public class UnitWithAssignmentFacade {
     private final SubmissionWithAssignmentFacade submissionWithAssignmentFacade;
     private final UnitService unitService;
     private final RegistrationService registrationService;
+    private final AssignmentService assignmentService;
+
+    @Transactional
+    public UnitResponse registrationAssignment(Course course, UnitRequest dto) {
+        Unit unit = unitService.createUnit(course, dto);
+        List<Assignment> assignments = assignmentService.findAllAssignmentById(dto.assignmentIds());
+        registrationService.createRegistrations(unit, assignments);
+        return UnitResponse.from(unit);
+    }
 
     public UnitDetailStudentResponse createStudentUnitResponse(Long memberId, Long unitId) {
         Unit unit = unitService.findUnit(unitId);

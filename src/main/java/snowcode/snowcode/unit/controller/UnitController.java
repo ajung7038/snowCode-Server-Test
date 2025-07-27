@@ -7,7 +7,6 @@ import snowcode.snowcode.common.response.BasicResponse;
 import snowcode.snowcode.common.response.ResponseUtil;
 import snowcode.snowcode.course.domain.Course;
 import snowcode.snowcode.course.service.CourseService;
-import snowcode.snowcode.unit.dto.UnitCountListResponse;
 import snowcode.snowcode.unit.dto.UnitRequest;
 import snowcode.snowcode.unit.dto.UnitResponse;
 import snowcode.snowcode.unit.service.UnitService;
@@ -25,8 +24,8 @@ public class UnitController {
     @PostMapping("/{courseId}")
     public BasicResponse<UnitResponse> createUnit(@PathVariable Long courseId, @Valid @RequestBody UnitRequest dto) {
         Course course = courseService.findCourse(courseId);
-        UnitResponse unit = unitService.createUnit(course, dto);
-        return ResponseUtil.success(unit);
+        UnitResponse unitResponse = unitWithAssignmentFacade.registrationAssignment(course, dto);
+        return ResponseUtil.success(unitResponse);
     }
 
     @GetMapping("/{unitId}")

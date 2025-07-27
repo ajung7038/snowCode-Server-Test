@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignment.domain.Assignment;
 import snowcode.snowcode.assignmentRegistration.domain.AssignmentRegistration;
 import snowcode.snowcode.assignmentRegistration.repository.RegistrationRepository;
+import snowcode.snowcode.unit.domain.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,14 @@ import java.util.stream.Collectors;
 public class RegistrationService {
 
     private final RegistrationRepository registrationRepository;
+
+    @Transactional
+    public void createRegistrations(Unit unit, List<Assignment> assignments) {
+        List<AssignmentRegistration> registrations = assignments.stream()
+                .map(assignment -> AssignmentRegistration.createRegistration(unit, assignment))
+                .toList();
+        registrationRepository.saveAll(registrations);
+    }
 
     public Map<Long, Integer> countAssignmentsByCourseId(List<Long> courseIds) {
         List<Object[]> results = registrationRepository.countAssignmentsByCourseIds(courseIds);
