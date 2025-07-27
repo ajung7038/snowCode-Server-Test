@@ -5,13 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import snowcode.snowcode.assignment.dto.*;
 import snowcode.snowcode.assignment.service.AssignmentRegistrationFacade;
-import snowcode.snowcode.assignment.service.AssignmentScheduleService;
+import snowcode.snowcode.assignmentRegistration.dto.RegistrationScheduleResponse;
+import snowcode.snowcode.assignmentRegistration.service.RegistrationScheduleService;
 import snowcode.snowcode.assignment.service.AssignmentService;
 import snowcode.snowcode.assignment.service.AssignmentWithTestcaseFacade;
 import snowcode.snowcode.common.response.BasicResponse;
 import snowcode.snowcode.common.response.ResponseUtil;
-import snowcode.snowcode.unit.domain.Unit;
-import snowcode.snowcode.unit.service.UnitService;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,14 +19,12 @@ public class AssignmentController {
 
     private final AssignmentService assignmentService;
     private final AssignmentRegistrationFacade assignmentRegistrationFacade;
-    private final UnitService unitService;
-    private final AssignmentScheduleService assignmentScheduleService;
+    private final RegistrationScheduleService registrationScheduleService;
     private final AssignmentWithTestcaseFacade assignmentWithTestcaseFacade;
 
-    @PostMapping("{unitId}")
-    public BasicResponse<AssignmentResponse> createAssignment(@PathVariable Long unitId, @Valid @RequestBody AssignmentRequest dto) {
-        Unit unit = unitService.findUnit(unitId);
-        AssignmentResponse assignment = assignmentService.createAssignment(unit, dto);
+    @PostMapping
+    public BasicResponse<AssignmentResponse> createAssignment(@Valid @RequestBody AssignmentRequest dto) {
+        AssignmentResponse assignment = assignmentService.createAssignment(dto);
         return ResponseUtil.success(assignment);
     }
 
@@ -50,8 +47,8 @@ public class AssignmentController {
     }
 
     @GetMapping("/{memberId}/schedule")
-    public BasicResponse<AssignmentScheduleResponse> listUpMySchedule(@PathVariable Long memberId) {
-        AssignmentScheduleResponse assignments = assignmentScheduleService.listUpMySchedule(memberId);
+    public BasicResponse<RegistrationScheduleResponse> listUpMySchedule(@PathVariable Long memberId) {
+        RegistrationScheduleResponse assignments = registrationScheduleService.listUpMySchedule(memberId);
         return ResponseUtil.success(assignments);
     }
 
