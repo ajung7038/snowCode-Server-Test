@@ -3,6 +3,7 @@ package snowcode.snowcode.unit.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import snowcode.snowcode.assignmentRegistration.service.RegistrationService;
 import snowcode.snowcode.common.response.BasicResponse;
 import snowcode.snowcode.common.response.ResponseUtil;
 import snowcode.snowcode.course.domain.Course;
@@ -21,6 +22,7 @@ public class UnitController {
     private final UnitService unitService;
     private final CourseService courseService;
     private final UnitWithAssignmentFacade unitWithAssignmentFacade;
+    private final RegistrationService registrationService;
 
     @PostMapping("/{courseId}")
     public BasicResponse<UnitWithAssignmentResponse> createUnit(@PathVariable Long courseId, @Valid @RequestBody UnitRequest dto) {
@@ -45,5 +47,11 @@ public class UnitController {
     public BasicResponse<String> deleteUnit (@PathVariable Long unitId) {
         unitWithAssignmentFacade.deleteAllByUnitId(unitId);
         return ResponseUtil.success("단원 삭제에 성공하였습니다.");
+    }
+
+    @DeleteMapping("/{unitId}/assignments/{assignmentId}")
+    public BasicResponse<String> deleteRegistrationAssignment(@PathVariable Long unitId, @PathVariable Long assignmentId) {
+        registrationService.deleteByUnitIdAndAssignmentId(unitId, assignmentId);
+        return ResponseUtil.success("등록된 과제 삭제에 성공하였습니다.");
     }
 }

@@ -8,7 +8,6 @@ import snowcode.snowcode.assignmentRegistration.domain.AssignmentRegistration;
 import snowcode.snowcode.assignmentRegistration.repository.RegistrationRepository;
 import snowcode.snowcode.unit.domain.Unit;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,6 +50,11 @@ public class RegistrationService {
     @Transactional
     public void deleteAllByUnitIdIn(List<Long> unitIds) {
         registrationRepository.deleteAllByUnitIdIn(unitIds);
+    }
+
+    @Transactional
+    public void deleteByUnitIdAndAssignmentId(Long unitId, Long assignmentId) {
+        registrationRepository.deleteByUnitIdAndAssignmentId(unitId, assignmentId);
     }
 
     private Map<Long, Integer> objectToMap(List<Object[]> results) {

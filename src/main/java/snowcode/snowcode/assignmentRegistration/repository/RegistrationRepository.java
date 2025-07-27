@@ -19,7 +19,7 @@ public interface RegistrationRepository extends JpaRepository<AssignmentRegistra
             GROUP BY u.course.id
     """)
     List<Object[]> countAssignmentsByCourseIds(@Param("courseIds") List<Long> courseIds);
-    
+
     @Query("""
                 SELECT a.id AS assignmentId,
                        c.title AS courseTitle,
@@ -53,6 +53,7 @@ public interface RegistrationRepository extends JpaRepository<AssignmentRegistra
     void deleteAllByAssignmentId(Long assignmentId);
     void deleteAllByUnitIdIn(List<Long> unitIds);
     void deleteAllByUnitId(Long unitId);
+    void deleteByUnitIdAndAssignmentId(Long unitId, Long assignmentId);
 
 
 }
