@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignment.domain.Assignment;
 import snowcode.snowcode.assignment.dto.AssignmentDetailAdminResponse;
 import snowcode.snowcode.assignment.dto.AssignmentDetailStudentResponse;
+import snowcode.snowcode.assignment.dto.AssignmentSimpleResponse;
 import snowcode.snowcode.assignment.service.AssignmentService;
 import snowcode.snowcode.assignmentRegistration.service.RegistrationService;
 import snowcode.snowcode.course.domain.Course;
@@ -26,11 +27,16 @@ public class UnitWithAssignmentFacade {
     private final AssignmentService assignmentService;
 
     @Transactional
-    public UnitResponse registrationAssignment(Course course, UnitRequest dto) {
+    public UnitWithAssignmentResponse registrationAssignment(Course course, UnitRequest dto) {
         Unit unit = unitService.createUnit(course, dto);
         List<Assignment> assignments = assignmentService.findAllAssignmentById(dto.assignmentIds());
         registrationService.createRegistrations(unit, assignments);
-        return UnitResponse.from(unit);
+
+        List<AssignmentSimpleResponse> assignmentList = new ArrayList<>();
+        for (Assignment assignment : assignments) {
+            assignmentList.add(AssignmentSimpleResponse.from(assignment));
+        }
+        return UnitWithAssignmentResponse.from(unit, assignmentList);
     }
 
     public UnitDetailStudentResponse createStudentUnitResponse(Long memberId, Long unitId) {

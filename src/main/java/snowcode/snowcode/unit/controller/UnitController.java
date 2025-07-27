@@ -9,6 +9,7 @@ import snowcode.snowcode.course.domain.Course;
 import snowcode.snowcode.course.service.CourseService;
 import snowcode.snowcode.unit.dto.UnitRequest;
 import snowcode.snowcode.unit.dto.UnitResponse;
+import snowcode.snowcode.unit.dto.UnitWithAssignmentResponse;
 import snowcode.snowcode.unit.service.UnitService;
 import snowcode.snowcode.unit.service.UnitWithAssignmentFacade;
 
@@ -22,10 +23,10 @@ public class UnitController {
     private final UnitWithAssignmentFacade unitWithAssignmentFacade;
 
     @PostMapping("/{courseId}")
-    public BasicResponse<UnitResponse> createUnit(@PathVariable Long courseId, @Valid @RequestBody UnitRequest dto) {
+    public BasicResponse<UnitWithAssignmentResponse> createUnit(@PathVariable Long courseId, @Valid @RequestBody UnitRequest dto) {
         Course course = courseService.findCourse(courseId);
-        UnitResponse unitResponse = unitWithAssignmentFacade.registrationAssignment(course, dto);
-        return ResponseUtil.success(unitResponse);
+        UnitWithAssignmentResponse unitList = unitWithAssignmentFacade.registrationAssignment(course, dto);
+        return ResponseUtil.success(unitList);
     }
 
     @GetMapping("/{unitId}")
