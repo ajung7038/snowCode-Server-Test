@@ -18,7 +18,7 @@ public class AssignmentDeleteFacade {
     private final RegistrationService registrationService;
 
     public void deleteAssignmentWithAll(Long assignmentId) {
-        testcaseService.deleteTestcaseWithAssignmentId(assignmentId);
+        testcaseService.deleteTestcaseByAssignmentId(assignmentId);
         registrationService.deleteAllByAssignmentId(assignmentId);
         submissionWithCodeFacade.deleteSubmissionWithAssigmentId(assignmentId);
         assignmentService.deleteAssignment(assignmentId);

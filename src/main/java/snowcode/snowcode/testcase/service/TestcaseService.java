@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignment.domain.Assignment;
 import snowcode.snowcode.testcase.domain.ExampleRole;
 import snowcode.snowcode.testcase.domain.Testcase;
+import snowcode.snowcode.testcase.dto.TestcaseCreateRequest;
 import snowcode.snowcode.testcase.dto.TestcaseInfoResponse;
 import snowcode.snowcode.testcase.dto.TestcaseRequest;
 import snowcode.snowcode.testcase.dto.TestcaseResponse;
@@ -31,13 +32,27 @@ public class TestcaseService {
     }
 
     @Transactional
+    public List<TestcaseInfoResponse> createTestcases(Assignment assignment, List<TestcaseCreateRequest> dtoList) {
+        List<TestcaseInfoResponse> testcaseInfoResponseList = new ArrayList<>();
+        if (dtoList == null) {
+            return testcaseInfoResponseList;
+        }
+        for (TestcaseCreateRequest dto : dtoList) {
+            Testcase testCase = Testcase.createTestCase(assignment, dto.testcase(), dto.answer(), ExampleRole.EXAMPLE, true);
+            testcaseRepository.save(testCase);
+            testcaseInfoResponseList.add(TestcaseInfoResponse.of(testCase));
+        }
+        return testcaseInfoResponseList;
+    }
+
+    @Transactional
     public void deleteTestcase(Long id) {
         Testcase testcase = findById(id);
         testcaseRepository.delete(testcase);
     }
 
     @Transactional
-    public void deleteTestcaseWithAssignmentId(Long id) {
+    public void deleteTestcaseByAssignmentId(Long id) {
         testcaseRepository.deleteAllByAssignmentId(id);
     }
 

@@ -23,18 +23,12 @@ public class AssignmentController {
     private final AssignmentWithTestcaseFacade assignmentWithTestcaseFacade;
 
     @PostMapping
-    public BasicResponse<AssignmentResponse> createAssignment(@Valid @RequestBody AssignmentRequest dto) {
-        AssignmentResponse assignment = assignmentService.createAssignment(dto);
+    public BasicResponse<AssignmentInfoResponse> createAssignment(@Valid @RequestBody AssignmentCreateWithTestcaseRequest dto) {
+        AssignmentInfoResponse assignment = assignmentWithTestcaseFacade.createAssignment(dto);
         return ResponseUtil.success(assignment);
     }
 
     @GetMapping("/{assignmentId}")
-    public BasicResponse<AssignmentResponse> findAssignment(@PathVariable Long assignmentId) {
-        AssignmentResponse assignment = assignmentService.findAssignment(assignmentId);
-        return ResponseUtil.success(assignment);
-    }
-
-    @GetMapping("/{assignmentId}/info")
     public BasicResponse<AssignmentInfoResponse> getDetailAssignment(@PathVariable Long assignmentId) {
         AssignmentInfoResponse assignmentInfo = assignmentWithTestcaseFacade.findAssignmentInfo(assignmentId);
         return ResponseUtil.success(assignmentInfo);
@@ -53,8 +47,8 @@ public class AssignmentController {
     }
 
     @PutMapping("/{assignmentId}")
-    public BasicResponse<AssignmentResponse> updateAssignment(@PathVariable Long assignmentId, @Valid @RequestBody AssignmentRequest dto) {
-        AssignmentResponse assignment = assignmentService.updateAssignment(assignmentId, dto);
+    public BasicResponse<AssignmentInfoResponse> updateAssignment(@PathVariable Long assignmentId, @Valid @RequestBody AssignmentUpdateWithTestcaseRequest dto) {
+        AssignmentInfoResponse assignment = assignmentWithTestcaseFacade.updateAssignment(assignmentId, dto);
         return ResponseUtil.success(assignment);
     }
 
