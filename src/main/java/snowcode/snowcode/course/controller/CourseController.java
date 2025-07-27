@@ -34,8 +34,6 @@ public class CourseController {
         return ResponseUtil.success(course);
     }
 
-    // // /courses/{courseId}/assignments
-    //
     @GetMapping("/{memberId}/{courseId}/assignments")
     public BasicResponse<CourseCountWithAssignmentResponse> findAllAssignmentWithCourseTitle(@PathVariable Long memberId, @PathVariable Long courseId) {
         CourseCountWithAssignmentResponse courseList = courseWithRegistrationFacade.findCourseTitleWithAssignments(memberId, courseId);
