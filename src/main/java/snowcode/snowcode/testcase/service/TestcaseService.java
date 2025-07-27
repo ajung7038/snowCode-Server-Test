@@ -34,6 +34,9 @@ public class TestcaseService {
     @Transactional
     public List<TestcaseInfoResponse> createTestcases(Assignment assignment, List<TestcaseCreateRequest> dtoList) {
         List<TestcaseInfoResponse> testcaseInfoResponseList = new ArrayList<>();
+        if (dtoList == null) {
+            return testcaseInfoResponseList;
+        }
         for (TestcaseCreateRequest dto : dtoList) {
             Testcase testCase = Testcase.createTestCase(assignment, dto.testcase(), dto.answer(), ExampleRole.EXAMPLE, true);
             testcaseRepository.save(testCase);
@@ -49,7 +52,7 @@ public class TestcaseService {
     }
 
     @Transactional
-    public void deleteTestcaseWithAssignmentId(Long id) {
+    public void deleteTestcaseByAssignmentId(Long id) {
         testcaseRepository.deleteAllByAssignmentId(id);
     }
 

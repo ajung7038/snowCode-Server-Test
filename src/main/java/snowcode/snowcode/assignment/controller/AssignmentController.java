@@ -53,8 +53,8 @@ public class AssignmentController {
     }
 
     @PutMapping("/{assignmentId}")
-    public BasicResponse<AssignmentResponse> updateAssignment(@PathVariable Long assignmentId, @Valid @RequestBody AssignmentRequest dto) {
-        AssignmentResponse assignment = assignmentService.updateAssignment(assignmentId, dto);
+    public BasicResponse<AssignmentInfoResponse> updateAssignment(@PathVariable Long assignmentId, @Valid @RequestBody AssignmentUpdateWithTestcaseRequest dto) {
+        AssignmentInfoResponse assignment = assignmentWithTestcaseFacade.updateAssignment(assignmentId, dto);
         return ResponseUtil.success(assignment);
     }
 
