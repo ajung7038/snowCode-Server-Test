@@ -43,6 +43,8 @@ public interface RegistrationRepository extends JpaRepository<AssignmentRegistra
                                                         @Param("endDate") LocalDate endDate);
 
     void deleteAllByAssignmentId(Long assignmentId);
+    void deleteAllByUnitIdIn(List<Long> unitIds);
+    void deleteAllByUnitId(Long unitId);
 
 
 }

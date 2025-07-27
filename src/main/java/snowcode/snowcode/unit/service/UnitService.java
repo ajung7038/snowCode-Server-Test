@@ -63,14 +63,13 @@ public class UnitService {
     }
 
     @Transactional
-    public void deleteUnit(Long unitId) {
-        Unit unit = findUnit(unitId);
-        unitRepository.delete(unit);
+    public void deleteAllById(List<Long> unitId) {
+        unitRepository.deleteAllById(unitId);
     }
 
     @Transactional
-    public void deleteUnitWithCourseId(Long courseId) {
-        unitRepository.deleteByCourseId(courseId);
+    public void deleteUnit(Long unitId) {
+        unitRepository.deleteById(unitId);
     }
 
     public Map<Long, Integer> countUnitsByCourseId(List<Long> courseIds) {
@@ -89,5 +88,9 @@ public class UnitService {
 
     public List<Unit> findAllByCourseId(Long courseId) {
         return unitRepository.findAllByCourseId(courseId);
+    }
+
+    public List<Long> findIdsByCourseId(Long courseId) {
+        return unitRepository.findIdByCourseId(courseId);
     }
 }

@@ -45,4 +45,15 @@ public class RegistrationService {
     public void deleteAllByAssignmentId(Long assignmentId) {
         registrationRepository.deleteAllByAssignmentId(assignmentId);
     }
+
+    @Transactional
+    public void deleteAllByUnitId(Long unitId) {
+        registrationRepository.deleteAllByUnitId(unitId);
+    }
+
+
+    @Transactional
+    public void deleteAllByUnitIdIn(List<Long> unitIds) {
+        registrationRepository.deleteAllByUnitIdIn(unitIds);
+    }
 }
