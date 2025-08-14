@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignmentRegistration.service.RegistrationService;
 import snowcode.snowcode.auth.domain.Member;
 import snowcode.snowcode.auth.domain.Role;
+import snowcode.snowcode.auth.exception.AuthErrorCode;
+import snowcode.snowcode.auth.exception.AuthException;
 import snowcode.snowcode.course.domain.Course;
 import snowcode.snowcode.course.dto.CourseCountListResponse;
 import snowcode.snowcode.course.dto.CourseListResponse;
@@ -13,9 +15,9 @@ import snowcode.snowcode.course.dto.CourseRequest;
 import snowcode.snowcode.course.dto.CourseResponse;
 import snowcode.snowcode.enrollment.domain.Enrollment;
 import snowcode.snowcode.enrollment.service.EnrollmentService;
+import snowcode.snowcode.student.dto.StudentRequest;
 import snowcode.snowcode.student.service.StudentService;
 import snowcode.snowcode.unit.service.UnitService;
-import snowcode.snowcode.unit.service.UnitWithAssignmentFacade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,6 @@ public class CourseWithEnrollmentFacade {
     private final UnitService unitService;
     private final StudentService studentService;
     private final RegistrationService registrationService;
-    private final UnitWithAssignmentFacade unitWithAssignmentFacade;
 
     public CourseResponse createCourseWithEnroll(Member member, CourseRequest dto) {
         Course course = courseService.createCourse(dto);
@@ -39,6 +40,15 @@ public class CourseWithEnrollmentFacade {
         studentService.addAdminInMembers(member, members);
         enrollmentService.createEnrollment(members, course);
         return CourseResponse.from(course);
+    }
+
+    public void addStudentWithEnroll(Long courseId, StudentRequest dto) {
+        Member student = studentService.findByStudentId(dto.studentId());
+        Course course = courseService.findCourse(courseId);
+        boolean isAlreadyEnrolled = enrollmentService.isAlreadyEnrolled(courseId, student.getId());
+
+        if (isAlreadyEnrolled) throw new AuthException(AuthErrorCode.IS_ALREADY_ENROLLED_STUDENT);
+        enrollmentService.createEnrollment(student, course);
     }
 
     public void deleteCourseAndEnrollment(Long courseId) {

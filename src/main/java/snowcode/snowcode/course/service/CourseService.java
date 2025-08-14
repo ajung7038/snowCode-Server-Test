@@ -31,11 +31,13 @@ public class CourseService {
         return course;
     }
 
+    @Transactional(readOnly = true)
     public Course findCourse(Long id) {
         return courseRepository.findById(id).orElseThrow(
                 () -> new CourseException(CourseErrorCode.COURSE_NOT_FOUND));
     }
 
+    @Transactional(readOnly = true)
     public List<Long> findCourseIdsWithTitle(Long memberId, Long courseId) {
         Course course = findCourse(courseId);
         String title = course.getTitle();

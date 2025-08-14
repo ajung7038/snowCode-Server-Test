@@ -36,11 +36,17 @@ public class EnrollmentService {
         enrollmentRepository.saveAll(enrollments);
     }
 
+    @Transactional(readOnly = true)
     public List<Long> ensureNotAlreadyEnrolled(List<Long> memberIds, Long courseId) {
         List<Long> registeredIds = enrollmentRepository.findAlreadyEnrolledMemberIds(memberIds, courseId);
         return memberIds.stream()
                 .filter(id -> !registeredIds.contains(id))
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isAlreadyEnrolled(Long courseId, Long memberId) {
+        return enrollmentRepository.findByCourseIdAndMemberId(courseId, memberId).isPresent();
     }
 
     public void deleteEnrollmentWithCourseId(Long courseId) {

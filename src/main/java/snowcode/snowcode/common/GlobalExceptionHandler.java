@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BasicResponse<ErrorEntity>> authException(AuthException e) {
         HttpStatus status = switch(e.getCode()) {
             case MEMBER_NOT_FOUND, STUDENT_NOT_FOUND -> HttpStatus.NOT_FOUND;
-            case INVALID_USER_ROLE -> HttpStatus.BAD_REQUEST;
+            case INVALID_USER_ROLE, IS_ALREADY_ENROLLED_STUDENT -> HttpStatus.BAD_REQUEST;
         };
         log.error("Auth Exception({}) = {}", e.getCode(), e.getMessage());
         BasicResponse<ErrorEntity> error = ResponseUtil.error(
