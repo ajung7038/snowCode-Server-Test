@@ -22,14 +22,14 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
 
     public void createEnrollment(Member member, Course course) {
-        Enrollment enrollment = Enrollment.createEnrollment(0, 0, EnrollmentStatus.ENROLLED, member, course);
+        Enrollment enrollment = Enrollment.createEnrollment(0, EnrollmentStatus.ENROLLED, member, course);
         enrollmentRepository.save(enrollment);
     }
 
     public void createEnrollment(List<Member> members, Course course) {
         List<Enrollment> enrollments = new ArrayList<>();
         for (Member member : members) {
-            Enrollment enrollment = Enrollment.createEnrollment(0, 0, EnrollmentStatus.ENROLLED, member, course);
+            Enrollment enrollment = Enrollment.createEnrollment(0, EnrollmentStatus.ENROLLED, member, course);
             enrollments.add(enrollment);
         }
 
