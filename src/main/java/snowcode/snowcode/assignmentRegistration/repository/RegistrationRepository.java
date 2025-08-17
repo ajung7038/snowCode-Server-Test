@@ -44,6 +44,8 @@ public interface RegistrationRepository extends JpaRepository<AssignmentRegistra
 
     List<AssignmentRegistration> findAllByUnitId(Long unitId);
 
+    List<AssignmentRegistration> findAllByUnitIdIn(List<Long> unitIds);
+
     Optional<AssignmentRegistration> findByUnitIdAndAssignmentId(Long unitId, Long assignmentId);
 
     @Query("""

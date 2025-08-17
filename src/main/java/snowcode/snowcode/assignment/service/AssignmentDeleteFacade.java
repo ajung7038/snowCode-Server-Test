@@ -25,7 +25,7 @@ public class AssignmentDeleteFacade {
         // FIXME - 찾고 삭제하는 로직 중복
         List<AssignmentRegistration> registrations = registrationService.findAllByAssignmentId(assignmentId);
         for (AssignmentRegistration registration : registrations) {
-            submissionWithCodeFacade.deleteSubmissionWithRegistrationId(registration.getId()); // 흠.. registration
+            submissionWithCodeFacade.deleteSubmissionWithRegistrationId(registration.getId());
         }
         registrationService.deleteAllByAssignmentId(assignmentId);
         assignmentService.deleteAssignment(assignmentId);

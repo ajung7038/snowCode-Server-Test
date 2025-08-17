@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import snowcode.snowcode.assignment.domain.Assignment;
 import snowcode.snowcode.assignmentRegistration.domain.AssignmentRegistration;
 import snowcode.snowcode.auth.domain.Member;
 

@@ -48,6 +48,10 @@ public class RegistrationService {
         return registrationRepository.findAllByUnitId(unitId);
     }
 
+    public List<AssignmentRegistration> findAllByUnitIdIn(List<Long> unitIds) {
+        return registrationRepository.findAllByUnitIdIn(unitIds);
+    }
+
     public List<AssignmentRegistration> findAllByAssignmentId(Long assignmentId) {
         return registrationRepository.findAllByAssignmentId(assignmentId);
     }
