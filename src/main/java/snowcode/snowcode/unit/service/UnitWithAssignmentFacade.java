@@ -8,6 +8,7 @@ import snowcode.snowcode.assignment.dto.AssignmentDetailAdminResponse;
 import snowcode.snowcode.assignment.dto.AssignmentDetailStudentResponse;
 import snowcode.snowcode.assignment.dto.AssignmentSimpleResponse;
 import snowcode.snowcode.assignment.service.AssignmentService;
+import snowcode.snowcode.assignmentRegistration.domain.AssignmentRegistration;
 import snowcode.snowcode.assignmentRegistration.service.RegistrationService;
 import snowcode.snowcode.course.domain.Course;
 import snowcode.snowcode.submission.service.SubmissionWithAssignmentFacade;
@@ -42,12 +43,12 @@ public class UnitWithAssignmentFacade {
 
     public UnitDetailStudentResponse createStudentUnitResponse(Long memberId, Long unitId) {
         Unit unit = unitService.findUnit(unitId);
-        List<Assignment> assignmentList = registrationService.findAllByUnitId(unitId);
+        List<AssignmentRegistration> assignmentRegistrationList = registrationService.findAllByUnitId(unitId);
 
         List<AssignmentDetailStudentResponse> assignmentDtoList = new ArrayList<>();
 
-        for (Assignment assignment : assignmentList) {
-            assignmentDtoList.add(submissionWithAssignmentFacade.createStudentAssignmentResponse(memberId, assignment.getId()));
+        for (AssignmentRegistration assignmentRegistration : assignmentRegistrationList) {
+            assignmentDtoList.add(submissionWithAssignmentFacade.createStudentAssignmentResponse(memberId, assignmentRegistration));
         }
         boolean isOpen = unitService.isOpenUnit(unit.getReleaseDate());
 
@@ -64,12 +65,12 @@ public class UnitWithAssignmentFacade {
 
     public UnitDetailAdminResponse createAdminUnitResponse(Long unitId) {
         Unit unit = unitService.findUnit(unitId);
-        List<Assignment> assignmentList = registrationService.findAllByUnitId(unitId);
+        List<AssignmentRegistration> assignmentRegistrationList = registrationService.findAllByUnitId(unitId);
 
         List<AssignmentDetailAdminResponse> assignmentDtoList = new ArrayList<>();
 
-        for (Assignment assignment : assignmentList) {
-            assignmentDtoList.add(submissionWithAssignmentFacade.createAdminAssignmentResponse(assignment.getId()));
+        for (AssignmentRegistration assignmentRegistration : assignmentRegistrationList) {
+            assignmentDtoList.add(submissionWithAssignmentFacade.createAdminAssignmentResponse(assignmentRegistration.getId()));
         }
         boolean isOpen = unitService.isOpenUnit(unit.getReleaseDate());
 
@@ -86,7 +87,7 @@ public class UnitWithAssignmentFacade {
 
     public UnitWithAssignmentResponse findAllByUnitId(Long unitId) {
         Unit unit = unitService.findUnit(unitId);
-        List<Assignment> assignments = registrationService.findAllByUnitId(unitId);
+        List<Assignment> assignments = registrationService.findAllByUnitId(unitId).stream().map(AssignmentRegistration::getAssignment).toList();
         List<AssignmentSimpleResponse> assignmentList = assignmentListToSimpleDto(assignments);
         return UnitWithAssignmentResponse.from(unit, assignmentList);
     }

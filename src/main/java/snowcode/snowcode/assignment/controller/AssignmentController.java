@@ -3,12 +3,13 @@ package snowcode.snowcode.assignment.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import snowcode.snowcode.assignment.dto.*;
+import snowcode.snowcode.assignment.dto.AssignmentCreateWithTestcaseRequest;
+import snowcode.snowcode.assignment.dto.AssignmentInfoResponse;
+import snowcode.snowcode.assignment.dto.AssignmentUpdateWithTestcaseRequest;
 import snowcode.snowcode.assignment.service.AssignmentDeleteFacade;
+import snowcode.snowcode.assignment.service.AssignmentWithTestcaseFacade;
 import snowcode.snowcode.assignmentRegistration.dto.RegistrationScheduleResponse;
 import snowcode.snowcode.assignmentRegistration.service.RegistrationScheduleService;
-import snowcode.snowcode.assignment.service.AssignmentService;
-import snowcode.snowcode.assignment.service.AssignmentWithTestcaseFacade;
 import snowcode.snowcode.common.response.BasicResponse;
 import snowcode.snowcode.common.response.ResponseUtil;
 
@@ -17,7 +18,6 @@ import snowcode.snowcode.common.response.ResponseUtil;
 @RequestMapping("/assignments")
 public class AssignmentController {
 
-    private final AssignmentService assignmentService;
     private final AssignmentDeleteFacade assignmentDeleteFacade;
     private final RegistrationScheduleService registrationScheduleService;
     private final AssignmentWithTestcaseFacade assignmentWithTestcaseFacade;

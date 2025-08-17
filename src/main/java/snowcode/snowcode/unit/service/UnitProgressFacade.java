@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignment.domain.Assignment;
 import snowcode.snowcode.assignment.service.AssignmentService;
+import snowcode.snowcode.assignmentRegistration.domain.AssignmentRegistration;
 import snowcode.snowcode.assignmentRegistration.service.RegistrationService;
 import snowcode.snowcode.auth.domain.Member;
 import snowcode.snowcode.course.domain.Course;
@@ -43,9 +44,9 @@ public class UnitProgressFacade {
 
         // totalScore 계산
         for (Unit unit : units) {
-            List<Assignment> assignments = registrationService.findAllByUnitId(unit.getId()); // FIXME - 한 번에 쿼리 날리기
-            for (Assignment assignment : assignments) {
-                totalScore += assignment.getScore();
+            List<AssignmentRegistration> registrations = registrationService.findAllByUnitId(unit.getId());// FIXME - 한 번에 쿼리 날리기
+            for (AssignmentRegistration registration : registrations) {
+                totalScore += registration.getAssignment().getScore();
             }
         }
 
@@ -53,10 +54,10 @@ public class UnitProgressFacade {
         for (Member member : members) {
             List<UnitProgressResponse> progress = new ArrayList<>();
             for (Unit unit : units) {
-                List<Assignment> assignments = registrationService.findAllByUnitId(unit.getId()); // FIXME - 한 번에 쿼리 날리기
+                List<AssignmentRegistration> registrations = registrationService.findAllByUnitId(unit.getId()); // FIXME - 한 번에 쿼리 날리기
                 isSubmitted = false;
-                for (Assignment assignment : assignments) {
-                    Optional<Submission> submitted = submissionService.isSubmitted(member.getId(), assignment);
+                for (AssignmentRegistration registration : registrations) {
+                    Optional<Submission> submitted = submissionService.isSubmitted(member.getId(), registration);
                     if (submitted.isPresent()) {
                         score += submitted.get().getScore();
                         isSubmitted = true;

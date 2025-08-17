@@ -87,7 +87,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AssignmentException.class)
     public ResponseEntity<BasicResponse<ErrorEntity>> assignmentException(AssignmentException e) {
         HttpStatus status = switch(e.getCode()) {
-            case ASSIGNMENT_NOT_FOUND -> HttpStatus.NOT_FOUND;
+            case ASSIGNMENT_NOT_FOUND, ASSIGNMENT_REGISTRATION_NOT_FOUND -> HttpStatus.NOT_FOUND;
         };
         log.error("Assignment Exception({}) = {}", e.getCode(), e.getMessage());
         BasicResponse<ErrorEntity> error = ResponseUtil.error(

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignment.domain.Assignment;
 import snowcode.snowcode.assignment.dto.AssignmentSimpleResponse;
+import snowcode.snowcode.assignment.exception.AssignmentErrorCode;
+import snowcode.snowcode.assignment.exception.AssignmentException;
 import snowcode.snowcode.assignmentRegistration.domain.AssignmentRegistration;
 import snowcode.snowcode.assignmentRegistration.repository.RegistrationRepository;
 import snowcode.snowcode.course.domain.Course;
@@ -36,8 +38,23 @@ public class RegistrationService {
         return objectToMap(results);
     }
 
-    public List<Assignment> findAllByUnitId(Long unitId) {
-        return registrationRepository.findAssignmentsByUnitId(unitId);
+    public AssignmentRegistration findById(Long registrationId) {
+        return registrationRepository.findById(registrationId).orElseThrow(
+                () -> new AssignmentException(AssignmentErrorCode.ASSIGNMENT_REGISTRATION_NOT_FOUND)
+        );
+    }
+
+    public List<AssignmentRegistration> findAllByUnitId(Long unitId) {
+        return registrationRepository.findAllByUnitId(unitId);
+    }
+
+    public List<AssignmentRegistration> findAllByAssignmentId(Long assignmentId) {
+        return registrationRepository.findAllByAssignmentId(assignmentId);
+    }
+
+    public AssignmentRegistration findByUnitIdAndAssignmentId(Long unitId, Long assignmentId) {
+        return registrationRepository.findByUnitIdAndAssignmentId(unitId, assignmentId)
+                .orElseThrow(() -> new AssignmentException(AssignmentErrorCode.ASSIGNMENT_REGISTRATION_NOT_FOUND));
     }
 
     public Map<Course, List<AssignmentSimpleResponse>> findAssignmentsByCourseId(List<Long> courseIds) {

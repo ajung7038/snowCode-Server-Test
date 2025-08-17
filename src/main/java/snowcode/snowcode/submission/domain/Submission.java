@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import snowcode.snowcode.assignment.domain.Assignment;
+import snowcode.snowcode.assignmentRegistration.domain.AssignmentRegistration;
 import snowcode.snowcode.auth.domain.Member;
 
 @Table(name = "submission")
@@ -24,17 +25,17 @@ public class Submission {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assignment_id", nullable = false)
-    private Assignment assignment;
+    @JoinColumn(name = "assignment_registration_id", nullable = false)
+    private AssignmentRegistration assignmentRegistration;
 
 
-    private Submission(int score, Member member, Assignment assignment) {
+    private Submission(int score, Member member, AssignmentRegistration assignmentRegistration) {
         this.score = score;
         this.member = member;
-        this.assignment = assignment;
+        this.assignmentRegistration = assignmentRegistration;
     }
 
-    public static Submission createSubmission(int score, Member member, Assignment assignment) {
-        return new Submission(score, member, assignment);
+    public static Submission createSubmission(int score, Member member, AssignmentRegistration assignmentRegistration) {
+        return new Submission(score, member, assignmentRegistration);
     }
 }

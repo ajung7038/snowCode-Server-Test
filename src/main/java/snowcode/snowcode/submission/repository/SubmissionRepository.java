@@ -13,8 +13,8 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
     @Query("""
         SELECT s.id
         FROM Submission s
-        WHERE s.assignment.id = :assignmentId""")
-    List<Long> findIdsByAssignmentId(@Param("assignmentId") Long assignmentId);
+        WHERE s.assignmentRegistration.id = :registrationId""")
+    List<Long> findIdsByRegistrationId(@Param("registrationId") Long registrationId);
 
-    Optional<Submission> findByMemberIdAndAssignmentId(Long memberId, Long assignmentId);
+    List<Submission> findByMemberIdAndAssignmentRegistrationId(Long memberId, Long assignmentRegistrationId);
 }

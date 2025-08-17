@@ -2,8 +2,8 @@ package snowcode.snowcode.submission.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import snowcode.snowcode.assignment.domain.Assignment;
-import snowcode.snowcode.assignment.service.AssignmentService;
+import snowcode.snowcode.assignmentRegistration.domain.AssignmentRegistration;
+import snowcode.snowcode.assignmentRegistration.service.RegistrationService;
 import snowcode.snowcode.auth.domain.Member;
 import snowcode.snowcode.auth.service.MemberService;
 import snowcode.snowcode.code.dto.CodeRequest;
@@ -18,14 +18,14 @@ import snowcode.snowcode.submission.service.SubmissionWithCodeFacade;
 @RequestMapping("/assignments")
 public class SubmissionController {
     private final SubmissionWithCodeFacade submissionWithCodeFacade;
-    private final AssignmentService assignmentService;
     private final MemberService memberService;
+    private final RegistrationService registrationService;
 
-    @PostMapping("/{memberId}/{assignmentId}/code")
-    public BasicResponse<SubmissionResponse> createSubmission(@PathVariable Long memberId, @PathVariable Long assignmentId, @RequestBody CodeRequest dto) {
+    @PostMapping("/{memberId}/{unitId}/{assignmentId}/code")
+    public BasicResponse<SubmissionResponse> createSubmission(@PathVariable Long memberId, @PathVariable Long unitId, @PathVariable Long assignmentId, @RequestBody CodeRequest dto) {
         Member member = memberService.findMember(memberId);
-        Assignment assignment = assignmentService.findById(assignmentId);
-        Submission submission = submissionWithCodeFacade.createSubmissionWithCode(member, assignment, dto);
+        AssignmentRegistration assignmentRegistration = registrationService.findByUnitIdAndAssignmentId(unitId, assignmentId);
+        Submission submission = submissionWithCodeFacade.createSubmissionWithCode(member, assignmentRegistration, dto);
         return ResponseUtil.success(SubmissionResponse.of(submission));
     }
 }
