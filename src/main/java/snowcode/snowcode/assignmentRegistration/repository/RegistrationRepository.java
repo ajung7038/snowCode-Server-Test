@@ -3,11 +3,11 @@ package snowcode.snowcode.assignmentRegistration.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import snowcode.snowcode.assignment.domain.Assignment;
 import snowcode.snowcode.assignmentRegistration.domain.AssignmentRegistration;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface RegistrationRepository extends JpaRepository<AssignmentRegistration, Long> {
 
@@ -34,7 +34,7 @@ public interface RegistrationRepository extends JpaRepository<AssignmentRegistra
                 AND NOT EXISTS (
                     SELECT 1
                     FROM Submission s
-                    WHERE s.assignment = a
+                    WHERE s.assignmentRegistration = au
                     AND s.member.id = :memberId
                 )
             """)
@@ -42,13 +42,11 @@ public interface RegistrationRepository extends JpaRepository<AssignmentRegistra
                                                         @Param("today") LocalDate today,
                                                         @Param("endDate") LocalDate endDate);
 
-    @Query("""
-        SELECT a
-        FROM AssignmentRegistration ar
-        JOIN ar.assignment a
-        WHERE ar.unit.id = :unitId
-    """)
-    List<Assignment> findAssignmentsByUnitId(@Param("unitId") Long unitId);
+    List<AssignmentRegistration> findAllByUnitId(Long unitId);
+
+    List<AssignmentRegistration> findAllByUnitIdIn(List<Long> unitIds);
+
+    Optional<AssignmentRegistration> findByUnitIdAndAssignmentId(Long unitId, Long assignmentId);
 
     @Query("""
         SELECT c, a.id, a.title
@@ -59,6 +57,8 @@ public interface RegistrationRepository extends JpaRepository<AssignmentRegistra
         WHERE c.id IN :courseIds
     """)
     List<Object[]> findAssignmentsByCourseId(@Param("courseIds") List<Long> courseIds);
+
+    List<AssignmentRegistration> findAllByAssignmentId(Long assignmentId);
 
     void deleteAllByAssignmentId(Long assignmentId);
     void deleteAllByUnitIdIn(List<Long> unitIds);

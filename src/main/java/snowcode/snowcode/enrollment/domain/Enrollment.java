@@ -21,9 +21,6 @@ public class Enrollment extends BaseTimeEntity {
     private int totalScore;
 
     @Column(nullable = false)
-    private int score;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;
 
@@ -35,15 +32,14 @@ public class Enrollment extends BaseTimeEntity {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
-    private Enrollment(int totalScore, int score, EnrollmentStatus status, Member member, Course course) {
+    private Enrollment(int totalScore, EnrollmentStatus status, Member member, Course course) {
         this.totalScore = totalScore;
-        this.score = score;
         this.status = status;
         this.member = member;
         this.course = course;
     }
 
-    public static Enrollment createEnrollment(int totalScore, int score, EnrollmentStatus status, Member member, Course course) {
-        return new Enrollment(totalScore, score, status, member, course);
+    public static Enrollment createEnrollment(int totalScore, EnrollmentStatus status, Member member, Course course) {
+        return new Enrollment(totalScore, status, member, course);
     }
 }

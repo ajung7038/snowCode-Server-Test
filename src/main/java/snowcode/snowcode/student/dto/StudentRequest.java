@@ -1,4 +1,6 @@
 package snowcode.snowcode.student.dto;
 
-public record StudentRequest(String studentId) {
+import jakarta.validation.constraints.NotBlank;
+
+public record StudentRequest(@NotBlank String studentId) {
 }

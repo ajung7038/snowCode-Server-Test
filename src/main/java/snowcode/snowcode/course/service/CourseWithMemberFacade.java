@@ -3,6 +3,7 @@ package snowcode.snowcode.course.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import snowcode.snowcode.auth.service.MemberService;
 import snowcode.snowcode.course.domain.Course;
 import snowcode.snowcode.course.dto.CourseDetailAdminResponse;
 import snowcode.snowcode.course.dto.CourseDetailStudentResponse;
@@ -22,7 +23,7 @@ public class CourseWithMemberFacade {
     private final CourseService courseService;
     private final UnitService unitService;
     private final UnitWithAssignmentFacade unitWithAssignmentFacade;
-    private final CourseWithEnrollmentFacade courseWithEnrollmentFacade;
+    private final MemberService memberService;
 
     public CourseDetailStudentResponse createStudentCourseResponse(Long memberId, Long courseId) {
         Course course = courseService.findCourse(courseId);
@@ -34,15 +35,7 @@ public class CourseWithMemberFacade {
             unitDtoList.add(unitWithAssignmentFacade.createStudentUnitResponse(memberId, unit.getId()));
         }
 
-        return new CourseDetailStudentResponse(
-                courseId,
-                course.getTitle(),
-                course.getYear(),
-                course.getSemester().toString(),
-                course.getSection(),
-                unitDtoList.size(),
-                unitDtoList
-        );
+        return CourseDetailStudentResponse.of(course, unitDtoList);
     }
 
     public CourseDetailAdminResponse createAdminCourseResponse(Long courseId) {
@@ -55,17 +48,8 @@ public class CourseWithMemberFacade {
             unitDtoList.add(unitWithAssignmentFacade.createAdminUnitResponse(unit.getId()));
         }
 
-        int size = courseWithEnrollmentFacade.findNonAdminByCourseId(courseId).size();
+        int size = memberService.findNonAdminByCourseId(courseId).size();
 
-        return new CourseDetailAdminResponse(
-                courseId,
-                course.getTitle(),
-                course.getYear(),
-                course.getSemester().toString(),
-                course.getSection(),
-                size,
-                unitDtoList.size(),
-                unitDtoList
-        );
+        return CourseDetailAdminResponse.of(course, size, unitDtoList);
     }
 }

@@ -6,7 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignment.domain.Assignment;
 import snowcode.snowcode.assignment.dto.AssignmentDetailAdminResponse;
 import snowcode.snowcode.assignment.dto.AssignmentDetailStudentResponse;
-import snowcode.snowcode.assignment.service.AssignmentService;
+import snowcode.snowcode.assignmentRegistration.domain.AssignmentRegistration;
+import snowcode.snowcode.assignmentRegistration.service.RegistrationService;
 import snowcode.snowcode.submission.domain.Submission;
 import snowcode.snowcode.submission.domain.SubmissionStatus;
 
@@ -17,24 +18,25 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class SubmissionWithAssignmentFacade {
 
-    private final SubmissionService submissionService;
-    private final AssignmentService assignmentService;
+    private final RegistrationService registrationService;
+    private final SubmissionPickLastService submissionPickLastService;
 
-    public AssignmentDetailStudentResponse createStudentAssignmentResponse(Long memberId, Long assignmentId) {
-        Assignment assignment = assignmentService.findById(assignmentId);
-        String status = getSubmissionStatus(memberId, assignment).toString();
-        return new AssignmentDetailStudentResponse(assignmentId, assignment.getTitle(), status);
+    public AssignmentDetailStudentResponse createStudentAssignmentResponse(Long memberId, AssignmentRegistration registration) {
+        Assignment assignment = registration.getAssignment();
+        String status = getSubmissionStatus(memberId, registration).toString();
+        return new AssignmentDetailStudentResponse(assignment.getId(), assignment.getTitle(), status);
     }
 
-    public AssignmentDetailAdminResponse createAdminAssignmentResponse(Long assignmentId) {
-        Assignment assignment = assignmentService.findById(assignmentId);
-        return new AssignmentDetailAdminResponse(assignmentId, assignment.getTitle());
+    public AssignmentDetailAdminResponse createAdminAssignmentResponse(Long registrationId) {
+        AssignmentRegistration registration = registrationService.findById(registrationId);
+        Assignment assignment = registration.getAssignment();
+        return new AssignmentDetailAdminResponse(assignment.getId(), assignment.getTitle());
     }
 
-    private SubmissionStatus getSubmissionStatus(Long memberId, Assignment assignment) {
-        Optional<Submission> submitted = submissionService.isSubmitted(memberId, assignment);
+    private SubmissionStatus getSubmissionStatus(Long memberId, AssignmentRegistration registration) {
+        Optional<Submission> submitted = submissionPickLastService.isSubmitted(memberId, registration);
         return submitted
-                .map(s -> s.getScore() == assignment.getScore() ? SubmissionStatus.CORRECT : SubmissionStatus.INCORRECT)
+                .map(s -> s.getScore() == registration.getAssignment().getScore() ? SubmissionStatus.CORRECT : SubmissionStatus.INCORRECT)
                 .orElse(SubmissionStatus.NOT_SUBMITTED);
     }
 }

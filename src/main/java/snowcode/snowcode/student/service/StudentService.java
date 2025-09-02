@@ -20,7 +20,7 @@ public class StudentService {
 
     public Member findByStudentId(String studentId) {
         return memberRepository.findByStudentId(studentId)
-                .orElseThrow(() -> new AuthException(AuthErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new AuthException(AuthErrorCode.STUDENT_NOT_FOUND));
     }
 
     public List<Member> findStudents(List<StudentRequest> students) {

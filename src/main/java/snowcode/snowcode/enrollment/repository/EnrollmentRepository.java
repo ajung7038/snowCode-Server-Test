@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import snowcode.snowcode.enrollment.domain.Enrollment;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
@@ -17,4 +18,6 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     // TODO - STUDY
     @Query("SELECT e.member.id FROM Enrollment e WHERE e.member.id IN :memberIds AND e.course.id = :courseId")
     List<Long> findAlreadyEnrolledMemberIds(@Param("memberIds") List<Long> memberIds, @Param("courseId") Long courseId);
+
+    Optional<Enrollment> findByCourseIdAndMemberId(Long courseId, Long memberId);
 }
