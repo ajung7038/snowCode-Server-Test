@@ -9,10 +9,13 @@ import snowcode.snowcode.auth.domain.Role;
 import snowcode.snowcode.auth.dto.*;
 import snowcode.snowcode.auth.exception.AuthErrorCode;
 import snowcode.snowcode.auth.exception.AuthException;
+import snowcode.snowcode.auth.exception.TokenErrorCode;
+import snowcode.snowcode.auth.exception.TokenException;
 import snowcode.snowcode.auth.repository.MemberRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +23,6 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-
-    @Transactional
-    public MemberResponse signup(MemberRequest dto) {
-        Member member = Member.createMember(dto.name(), Role.of(dto.role()), dto.email());
-        memberRepository.save(member);
-        return MemberResponse.from(member);
-    }
 
     @Transactional
     public AddProfileResponse updateStudentId(Member member, String studentId) {
@@ -73,4 +69,8 @@ public class MemberService {
         return memberRepository.findNonAdminByCourseIdAndStudentId(courseId, studentId, Role.ADMIN);
     }
 
+    public Member findMemberByUsername(UUID username) {
+        return memberRepository.findByUsername(username)
+                .orElseThrow(() -> new TokenException(TokenErrorCode.NOT_FOUND_USERNAME));
+    }
 }

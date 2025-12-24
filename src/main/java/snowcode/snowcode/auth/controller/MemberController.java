@@ -24,21 +24,6 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/signup")
-    @Operation(summary = "회원가입 API", description = "회원가입 (임시)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원가입 성공",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = MemberResponse.class))}),
-            @ApiResponse(responseCode = "400", description = "BAD_INPUT",
-                    content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
-            @ApiResponse(responseCode = "400", description = "role에 USER, ADMIN이 아닌 다른 것을 넣은 경우",
-                    content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
-    })
-    public BasicResponse<MemberResponse> signup (@Valid @RequestBody MemberRequest dto) {
-        MemberResponse memberResponse = memberService.signup(dto);
-        return ResponseUtil.success(memberResponse);
-    }
-
     @GetMapping("/me/{memberId}")
     @Operation(summary = "내 정보 조회 API", description = "내 정보 조회 (이름)")
     @ApiResponses(value = {

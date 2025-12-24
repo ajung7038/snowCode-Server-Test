@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import snowcode.snowcode.testcase.dto.TestcaseCreateRequest;
-import snowcode.snowcode.testcase.dto.TestcaseRequest;
 
 import java.util.List;
 
