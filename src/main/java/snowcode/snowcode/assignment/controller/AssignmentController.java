@@ -34,8 +34,6 @@ public class AssignmentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "과제 추가 성공",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AssignmentInfoResponse.class))}),
-//            @ApiResponse(responseCode = "400", description = "BAD_INPUT",
-//                    content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<AssignmentInfoResponse> createAssignment(@Valid @RequestBody AssignmentCreateWithTestcaseRequest dto) {
         AssignmentInfoResponse assignment = assignmentWithTestcaseFacade.createAssignment(dto);
