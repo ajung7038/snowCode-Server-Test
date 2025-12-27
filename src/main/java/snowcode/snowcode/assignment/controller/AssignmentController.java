@@ -16,6 +16,7 @@ import snowcode.snowcode.assignment.service.AssignmentDeleteFacade;
 import snowcode.snowcode.assignment.service.AssignmentWithTestcaseFacade;
 import snowcode.snowcode.assignmentRegistration.dto.RegistrationScheduleResponse;
 import snowcode.snowcode.assignmentRegistration.service.RegistrationScheduleService;
+import snowcode.snowcode.auth.service.AuthContext;
 import snowcode.snowcode.auth.service.AuthService;
 import snowcode.snowcode.common.response.BasicResponse;
 import snowcode.snowcode.common.response.ResponseUtil;
@@ -30,6 +31,7 @@ public class AssignmentController {
     private final RegistrationScheduleService registrationScheduleService;
     private final AssignmentWithTestcaseFacade assignmentWithTestcaseFacade;
     private final AuthService authService;
+    private final AuthContext authContext;
 
     @PostMapping
     @Operation(summary = "과제 추가 API", description = "과제 추가")
@@ -38,7 +40,10 @@ public class AssignmentController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = AssignmentInfoResponse.class))}),
     })
     public BasicResponse<AssignmentInfoResponse> createAssignment(@Valid @RequestBody AssignmentCreateWithTestcaseRequest dto) {
-        AssignmentInfoResponse assignment = assignmentWithTestcaseFacade.createAssignment(dto);
+        // 인가
+        authContext.isAdmin();
+        Long memberId = authService.loadMember().getId();
+        AssignmentInfoResponse assignment = assignmentWithTestcaseFacade.createAssignment(memberId, dto);
         return ResponseUtil.success(assignment);
     }
 
@@ -51,6 +56,7 @@ public class AssignmentController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<AssignmentInfoResponse> getDetailAssignment(@PathVariable Long assignmentId) {
+        authContext.isAssignmentOwner(assignmentId); // 인가
         AssignmentInfoResponse assignmentInfo = assignmentWithTestcaseFacade.findAssignmentInfo(assignmentId);
         return ResponseUtil.success(assignmentInfo);
     }
@@ -78,6 +84,7 @@ public class AssignmentController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<AssignmentInfoResponse> updateAssignment(@PathVariable Long assignmentId, @Valid @RequestBody AssignmentUpdateWithTestcaseRequest dto) {
+        authContext.isAssignmentOwner(assignmentId); // 인가
         AssignmentInfoResponse assignment = assignmentWithTestcaseFacade.updateAssignment(assignmentId, dto);
         return ResponseUtil.success(assignment);
     }
@@ -91,6 +98,7 @@ public class AssignmentController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<String> deleteAssignment(@PathVariable Long assignmentId) {
+        authContext.isAssignmentOwner(assignmentId); // 인가
         assignmentDeleteFacade.deleteAssignmentWithAll(assignmentId);
         return ResponseUtil.success("과제 삭제에 성공하였습니다.");
     }

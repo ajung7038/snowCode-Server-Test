@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.auth.domain.Member;
+import snowcode.snowcode.auth.domain.Role;
 import snowcode.snowcode.auth.dto.login.*;
 import snowcode.snowcode.auth.dto.login.kakao.KakaoUserResponse;
 import snowcode.snowcode.auth.exception.TokenErrorCode;
@@ -89,6 +90,14 @@ public class AuthService {
 
         return memberRepository.findById(user.getMemberId())
                 .orElseThrow(() -> new TokenException(TokenErrorCode.UNAUTHORIZED));
+    }
+
+    public Role getRole() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !(auth.getPrincipal() instanceof CustomUserDetails user)) {
+            throw new TokenException(TokenErrorCode.UNAUTHORIZED);
+        }
+        return user.getRole();
     }
 
 

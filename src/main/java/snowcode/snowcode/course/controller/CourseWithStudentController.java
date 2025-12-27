@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import snowcode.snowcode.auth.domain.Member;
+import snowcode.snowcode.auth.service.AuthContext;
 import snowcode.snowcode.auth.service.MemberService;
 import snowcode.snowcode.common.response.BasicResponse;
 import snowcode.snowcode.common.response.ResponseUtil;
@@ -28,6 +29,7 @@ public class CourseWithStudentController {
     private final CourseWithEnrollmentFacade courseWithEnrollmentFacade;
     private final UnitProgressFacade unitProgressFacade;
     private final MemberService memberService;
+    private final AuthContext authContext;
 
     @PostMapping("/{courseId}/enrollments")
     @Operation(summary = "학생 등록 API", description = "학생 등록")
@@ -42,6 +44,7 @@ public class CourseWithStudentController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<String> addStudent(@PathVariable Long courseId, @Valid @RequestBody StudentRequest dto) {
+        authContext.isCourseOwner(courseId); // 인가
         courseWithEnrollmentFacade.addStudentWithEnroll(courseId, dto);
         return ResponseUtil.success("학생 추가에 성공하였습니다.");
     }
@@ -70,6 +73,7 @@ public class CourseWithStudentController {
 
     })
     public BasicResponse<StudentResponse> findStudentWithStatus(@PathVariable Long courseId, @PathVariable Long memberId) {
+        authContext.isCourseOwner(courseId); // 인가
         StudentResponse student = unitProgressFacade.findStudentsWithCourse(memberId, courseId);
         return ResponseUtil.success(student);
     }
@@ -83,6 +87,7 @@ public class CourseWithStudentController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<String> deleteStudentWithEnrollment(@PathVariable Long courseId, @PathVariable Long memberId) {
+        authContext.isCourseOwner(courseId); // 인가
         courseWithEnrollmentFacade.deleteStudentWithEnrollment(courseId, memberId);
         return ResponseUtil.success("학생 삭제에 성공하였습니다.");
     }

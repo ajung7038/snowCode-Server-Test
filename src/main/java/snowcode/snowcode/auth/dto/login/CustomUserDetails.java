@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import snowcode.snowcode.auth.domain.Member;
+import snowcode.snowcode.auth.domain.Role;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 public class CustomUserDetails implements UserDetails {
     private final Long memberId;
+    private final Role role;
 
 
     @Override
@@ -20,6 +22,7 @@ public class CustomUserDetails implements UserDetails {
 
     public CustomUserDetails(Member member) {
         this.memberId = member.getId();
+        this.role = member.getRole();
     }
 
 

@@ -59,6 +59,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(member.username().toString())
                 .claim("provider", member.provider())
+                .claim("role", member.role())
                 .setIssuedAt(Date.from(now.toInstant()))
                 .setExpiration(Date.from(expiry.toInstant()))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -73,7 +74,6 @@ public class JwtUtil {
     public String getUsername(String token) {
         return parseClaims(token).getSubject();
     }
-
 
     /**
      * JWT 검증

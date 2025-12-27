@@ -9,16 +9,18 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import snowcode.snowcode.assignmentRegistration.service.RegistrationService;
+import snowcode.snowcode.auth.service.AuthContext;
 import snowcode.snowcode.common.response.BasicResponse;
 import snowcode.snowcode.common.response.ResponseUtil;
 import snowcode.snowcode.course.domain.Course;
 import snowcode.snowcode.course.service.CourseService;
 import snowcode.snowcode.unit.domain.Unit;
-import snowcode.snowcode.unit.dto.*;
+import snowcode.snowcode.unit.dto.UnitRequest;
+import snowcode.snowcode.unit.dto.UnitResponse;
+import snowcode.snowcode.unit.dto.UnitUpdateRequest;
+import snowcode.snowcode.unit.dto.UnitWithAssignmentResponse;
 import snowcode.snowcode.unit.service.UnitService;
 import snowcode.snowcode.unit.service.UnitWithAssignmentFacade;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class UnitController {
     private final CourseService courseService;
     private final UnitWithAssignmentFacade unitWithAssignmentFacade;
     private final RegistrationService registrationService;
+    private final AuthContext authContext;
 
     @PostMapping("/{courseId}")
     @Operation(summary = "단원 추가 API", description = "단원 추가")
@@ -41,6 +44,7 @@ public class UnitController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<UnitWithAssignmentResponse> createUnit(@PathVariable Long courseId, @Valid @RequestBody UnitRequest dto) {
+        authContext.isCourseOwner(courseId); // 인가
         Course course = courseService.findCourse(courseId);
         UnitWithAssignmentResponse unitList = unitWithAssignmentFacade.registrationAssignment(course, dto);
         return ResponseUtil.success(unitList);
@@ -70,8 +74,13 @@ public class UnitController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<UnitResponse> updateUnit(@PathVariable Long unitId, @Valid @RequestBody UnitUpdateRequest dto) {
-        UnitResponse unit = unitService.updateUnit(unitId, dto);
-        return ResponseUtil.success(unit);
+        // TODO: 인가 파트 최적화 필요
+        Unit unit = unitService.findUnit(unitId);
+        Long courseId = unit.getCourse().getId();
+        authContext.isCourseOwner(courseId); // 인가
+
+        UnitResponse unitDto = unitService.updateUnit(unitId, dto);
+        return ResponseUtil.success(unitDto);
     }
 
     @DeleteMapping("/{unitId}")
@@ -83,6 +92,10 @@ public class UnitController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<String> deleteUnit (@PathVariable Long unitId) {
+        Unit unit = unitService.findUnit(unitId);
+        Long courseId = unit.getCourse().getId();
+        authContext.isCourseOwner(courseId); // 인가
+
         unitWithAssignmentFacade.deleteAllByUnitId(unitId);
         return ResponseUtil.success("단원 삭제에 성공하였습니다.");
     }
@@ -96,6 +109,10 @@ public class UnitController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<String> deleteRegistrationAssignment(@PathVariable Long unitId, @PathVariable Long assignmentId) {
+        Unit unit = unitService.findUnit(unitId);
+        Long courseId = unit.getCourse().getId();
+        authContext.isCourseOwner(courseId); // 인가
+
         registrationService.deleteByUnitIdAndAssignmentId(unitId, assignmentId);
         return ResponseUtil.success("등록된 과제 삭제에 성공하였습니다.");
     }

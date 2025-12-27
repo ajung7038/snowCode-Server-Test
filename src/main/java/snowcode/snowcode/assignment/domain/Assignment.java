@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import snowcode.snowcode.assignment.dto.AssignmentCreateWithTestcaseRequest;
 import snowcode.snowcode.common.BaseTimeEntity;
-import snowcode.snowcode.unit.domain.Unit;
 
 @Entity @Getter
 @Table(name = "assignment")
@@ -24,14 +24,18 @@ public class Assignment extends BaseTimeEntity {
 
     private String description;
 
-    private Assignment(String title, int score, String description) {
+    @Column(nullable = false)
+    private Long createdBy;
+
+    private Assignment(Long memberId, String title, int score, String description) {
+        this.createdBy = memberId;
         this.title = title;
         this.score = score;
         this.description = description;
     }
 
-    public static Assignment createAssignment(String title, int score, String description) {
-        return new Assignment(title, score, description);
+    public static Assignment createAssignment(Long memberId, AssignmentCreateWithTestcaseRequest dto) {
+        return new Assignment(memberId, dto.title(), dto.score(), dto.description());
     }
 
     public void updateAssignment(String title, int score, String description) {

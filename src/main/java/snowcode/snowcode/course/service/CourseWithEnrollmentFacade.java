@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import snowcode.snowcode.assignmentRegistration.service.RegistrationService;
 import snowcode.snowcode.auth.domain.Member;
-import snowcode.snowcode.auth.domain.Role;
 import snowcode.snowcode.auth.exception.AuthErrorCode;
 import snowcode.snowcode.auth.exception.AuthException;
 import snowcode.snowcode.course.domain.Course;
@@ -35,7 +34,7 @@ public class CourseWithEnrollmentFacade {
     private final RegistrationService registrationService;
 
     public CourseResponse createCourseWithEnroll(Member member, CourseRequest dto) {
-        Course course = courseService.createCourse(dto);
+        Course course = courseService.createCourse(member.getId(), dto);
         List<Member> members = studentService.findStudents(dto.students());
         studentService.addAdminInMembers(member, members);
         enrollmentService.createEnrollment(members, course);
