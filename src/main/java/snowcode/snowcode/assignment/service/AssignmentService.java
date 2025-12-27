@@ -18,8 +18,8 @@ public class AssignmentService {
     private final AssignmentRepository assignmentRepository;
 
     @Transactional
-    public Assignment createAssignment(String title, int score, String description) {
-        Assignment assignment = Assignment.createAssignment(title, score, description);
+    public Assignment createAssignment(Long memberId, AssignmentCreateWithTestcaseRequest dto) {
+        Assignment assignment = Assignment.createAssignment(memberId, dto);
         assignmentRepository.save(assignment);
         return assignment;
     }

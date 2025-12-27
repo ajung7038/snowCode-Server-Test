@@ -46,8 +46,7 @@ public class TestcaseService {
     }
 
     @Transactional
-    public void deleteTestcase(Long id) {
-        Testcase testcase = findById(id);
+    public void deleteTestcase(Testcase testcase) {
         testcaseRepository.delete(testcase);
     }
 

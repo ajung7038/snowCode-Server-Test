@@ -29,8 +29,10 @@ public class Course extends BaseTimeEntity {
     private Semester semester;
 
     private String description;
+    private Long createdBy;
 
-    private Course(String title, String section, int year, Semester semester, String description) {
+    private Course(Long memberId, String title, String section, int year, Semester semester, String description) {
+        this.createdBy = memberId;
         this.title = title;
         this.section = section;
         this.year = year;
@@ -38,8 +40,8 @@ public class Course extends BaseTimeEntity {
         this.description = description;
     }
 
-    public static Course createCourse(String title, String section, int year, Semester semester, String description) {
-        return new Course(title, section, year, semester, description);
+    public static Course createCourse(Long memberId, String title, String section, int year, Semester semester, String description) {
+        return new Course(memberId, title, section, year, semester, description);
     }
 
     public void updateCourse(String title, String section, int year, Semester semester, String description) {

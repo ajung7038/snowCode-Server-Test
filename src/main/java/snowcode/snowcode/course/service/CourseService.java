@@ -21,12 +21,12 @@ import java.util.List;
 public class CourseService {
     private final CourseRepository courseRepository;
 
-    public Course createCourse(CourseRequest dto) {
+    public Course createCourse(Long memberId, CourseRequest dto) {
 
         int year = Validator.validYear(dto.year());
         Semester semester = Semester.valueOf(dto.semester());
 
-        Course course = Course.createCourse(dto.title(), dto.section(), year, semester, dto.description());
+        Course course = Course.createCourse(memberId, dto.title(), dto.section(), year, semester, dto.description());
         courseRepository.save(course);
         return course;
     }

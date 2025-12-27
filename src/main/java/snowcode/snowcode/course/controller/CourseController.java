@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import snowcode.snowcode.auth.domain.Member;
 import snowcode.snowcode.auth.domain.Role;
+import snowcode.snowcode.auth.service.AuthContext;
 import snowcode.snowcode.auth.service.AuthService;
 import snowcode.snowcode.common.response.BasicResponse;
 import snowcode.snowcode.common.response.ResponseUtil;
@@ -32,6 +33,7 @@ public class CourseController {
     private final CourseWithRegistrationFacade courseWithRegistrationFacade;
     private final UnitWithAssignmentFacade unitWithAssignmentFacade;
     private final AuthService authService;
+    private final AuthContext authContext;
 
     @PostMapping
     @Operation(summary = "강의 추가 API", description = "강의 추가 (학생까지 추가)")
@@ -47,6 +49,9 @@ public class CourseController {
 
     })
     public BasicResponse<CourseResponse> createCourse(@Valid @RequestBody CourseRequest dto) {
+        // 인가
+        authContext.isAdmin();
+
         Member member = authService.loadMember();
         CourseResponse course = courseWithEnrollmentFacade.createCourseWithEnroll(member, dto);
         return ResponseUtil.success(course);
@@ -81,6 +86,7 @@ public class CourseController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<CourseResponse> updateCourse(@PathVariable Long courseId, @Valid @RequestBody CourseRequest dto) {
+        authContext.isCourseOwner(courseId); // 인가
         CourseResponse course = courseService.updateCourse(courseId, dto);
         return ResponseUtil.success(course);
     }
@@ -94,6 +100,7 @@ public class CourseController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<String> deleteCourse(@PathVariable Long courseId) {
+        authContext.isCourseOwner(courseId); // 인가
         courseWithEnrollmentFacade.deleteCourseAndEnrollment(courseId);
         return ResponseUtil.success("강의 삭제에 성공하였습니다.");
     }
@@ -141,6 +148,7 @@ public class CourseController {
                     content = {@Content(schema = @Schema(implementation = BasicResponse.class))}),
     })
     public BasicResponse<UnitCountListResponse> findAllUnit(@PathVariable Long courseId) {
+        authContext.isCourseOwner(courseId); // 인가
         UnitCountListResponse units = unitWithAssignmentFacade.findAllUnit(courseId);
         return ResponseUtil.success(units);
     }
