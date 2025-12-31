@@ -34,7 +34,7 @@ public class LoginController {
     private final TokenService tokenService;
 
     @PostMapping
-    @Operation(summary = "로그인 API", description = "카카오/구글/애플")
+    @Operation(summary = "로그인 API", description = "카카오")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인에 성공하였습니다.",
                     content = @Content(
