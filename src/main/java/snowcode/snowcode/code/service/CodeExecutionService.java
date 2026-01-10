@@ -11,7 +11,10 @@ import snowcode.snowcode.testcase.dto.TestcaseInfoResponse;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -25,17 +28,20 @@ import java.util.concurrent.Future;
 @Transactional(readOnly = true)
 public class CodeExecutionService {
 
+    // 작업 경로 고정
+    private static final Path WORK_DIR = Paths.get("/tmp/code-runner");
+
     @Async("taskExecutor") // 사용할 custom executor 지정
     public Future<String> run(String code, String testcase) throws IOException, InterruptedException {
         // 스레드 수행 내용 작성
         String random = UUID.randomUUID().toString();
+        // 중복되지 않도록 UUID 값을 생성해 인풋 코드를 파일로 저장
+        Path filePath = createFile(random, code);
         try {
-            // 중복되지 않도록 UUID 값을 생성해 인풋 코드를 파일로 저장
-            createFile(random, code);
 
             // 해당 소스코드 파일을 python3으로 실행하는 프로세스를 생성
             ProcessBuilder processBuilder = new ProcessBuilder("python3",
-                    Paths.get(String.format("%s.py", random)).toString());
+                    filePath.toAbsolutePath().toString());
             Process process = processBuilder.start();
 
             try (BufferedWriter bw = new BufferedWriter(
@@ -49,8 +55,7 @@ public class CodeExecutionService {
             BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
             return CompletableFuture.completedFuture(getOutput(br));
         } finally {
-            // 작성한 파일 삭제
-            deleteFile(random); // FIXME : 서버 환경에서 path 설정 필요
+            deleteFile(filePath);
         }
     }
 
@@ -104,32 +109,27 @@ public class CodeExecutionService {
         return sb.toString();
     }
 
-    private void createFile(String random, String code) {
-        File file = new File(random + ".py");
-
+    private Path createFile(String random, String code) {
         try {
-            if (file.createNewFile()) {
-                //생성된 파일에 Buffer 를 사용하여 텍스트 입력
-                FileWriter fw = new FileWriter(file);
-                BufferedWriter writer = new BufferedWriter(fw);
+            String filename = random + ".py";
+            Path filePath = WORK_DIR.resolve(filename);
 
-                // 데이터 입력
-                writer.write(code);
-
-                // Bufferd 종료
-                writer.close();
-            } else {
-                System.out.println("File already exists");
-            }
+            Files.writeString(
+                    filePath,
+                    code,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING
+            );
+            return filePath;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new SubmissionException(SubmissionErrorCode.FILE_CREATE_FAILED);
         }
     }
 
-    private void deleteFile(String random) {
-        // 파일 지우기
-        File file = new File(String.valueOf(Paths.get(random + ".py")));
-        if (!file.delete()) {
+    private void deleteFile(Path filePath) {
+        try {
+            Files.deleteIfExists(filePath);
+        } catch (IOException e) {
             throw new SubmissionException(SubmissionErrorCode.FILE_NOT_FOUND);
         }
     }
