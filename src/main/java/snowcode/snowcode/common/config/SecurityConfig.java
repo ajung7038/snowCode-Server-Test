@@ -37,8 +37,8 @@ public class SecurityConfig {
     private String frontend;
 
     private static final String[] AUTH_WHITELIST = {
-            "/swagger-ui/**", "/oauth2/authorization", "/api-docs", "/members", "/health",
-            "/v3/api-docs/**", "/swagger-ui.html", "/oauth2/authorization", "/auth/apple/callback"
+            "/swagger-ui/**", "/oauth2/authorization", "/api-docs", "/members", "/health", "/actuator/**",
+            "/v3/api-docs/**", "/swagger-ui.html", "/oauth2/authorization",
     };
 
     @Bean
