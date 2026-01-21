@@ -70,12 +70,3 @@ jobs:
         run: |
           echo "${{ secrets.PRIVATE_KEY }}" > /tmp/private-key
           chmod 600 /tmp/private-key
-
-      - name: Run docker-compose
-        run: |
-          ssh -o StrictHostKeyChecking=no -i /tmp/private-key ajeong@${{ secrets.HOST }} <<EOF
-          cd ~
-          docker-compose pull
-          docker-compose up -d
-          docker system prune
-          EOF
