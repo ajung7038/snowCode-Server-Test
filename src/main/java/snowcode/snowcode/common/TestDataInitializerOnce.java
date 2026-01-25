@@ -46,10 +46,10 @@ public class TestDataInitializerOnce {
     @PostConstruct
     @Transactional
     public void init() throws GeneralSecurityException {
-        createMember();
-        createCourse();
-        createAssignment();
-        createUnit();
+//        createMember();
+//        createCourse();
+//        createAssignment();
+//        createUnit();
     }
 
     private void createMember() throws GeneralSecurityException {
