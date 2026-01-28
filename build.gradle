@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.3'
 	id 'io.spring.dependency-management' version '1.1.7'
-	id 'io.gatling.gradle' version '3.9.3'
+	id 'io.gatling.gradle' version '3.13.5'
 }
 
 group = 'snowcode'
@@ -10,7 +10,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(17)
 	}
 }
 
@@ -56,8 +56,9 @@ dependencies {
 	implementation 'io.micrometer:micrometer-registry-prometheus'
 
 	// 부하 테스트
-	testImplementation 'io.gatling.highcharts:gatling-charts-highcharts:3.9.3'
-	testImplementation 'io.gatling:gatling-test-framework:3.9.3'
+	testImplementation 'io.gatling.highcharts:gatling-charts-highcharts:3.13.5'
+	testImplementation 'io.gatling:gatling-test-framework:3.13.5'
+	testImplementation "io.gatling:gatling-http-java:3.13.5"
 }
 
 tasks.named('test') {
