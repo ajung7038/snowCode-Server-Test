@@ -17,7 +17,7 @@ public class TomcatCustomConfig {
                     // Poller 스레드 개수를 2개로 설정 (기본값 1)
                     connector.setProperty("pollerThreadCount", "2");
 //                    // selectorTimeout을 5000ms(5초)로 변경 -> 0.5초로 변경
-                    connector.setProperty("selectorTimeout", "2000");
+                    connector.setProperty("selectorTimeout", "100");
 //                    connector.setProperty("tcpNoDelay", "true");
                 });
             }
