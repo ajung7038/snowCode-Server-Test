@@ -87,18 +87,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     // 소켓 연결 종료
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-//        log.info("{} 연결 끊김", session.getId());
-//        sessions.remove(session);
-
-        long start = System.currentTimeMillis();
         log.info("{} 연결 끊김", session.getId());
-        long end = System.currentTimeMillis();
-
-        long duration = end - start;
-        if (duration > 100) { // 100ms 넘게 걸리면 범인 검거
-            log.warn("slf4j 지연 발생, 지연 시간은: {}ms", duration);
-        }
-
         sessions.remove(session);
 //        session.sendMessage(new TextMessage("WebSocket 연결 종료"));
     }
