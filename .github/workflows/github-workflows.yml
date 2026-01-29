@@ -64,8 +64,8 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/snowcode-test
             sudo docker stop $(sudo docker ps --filter "publish=8080" --format "{{.ID}}") 2>/dev/null || true
             docker run -d -p 8080:8080 \
-              -e PINPOINT_COLLECTOR_IP=${{ secrets.PINPOINT_COLLECTOR_IP }} \
-              -v /opt/pinpoint:/pinpoint \
+#              -e PINPOINT_COLLECTOR_IP=${{ secrets.PINPOINT_COLLECTOR_IP }} \
+#              -v /opt/pinpoint:/pinpoint \
               ${{ secrets.DOCKER_USERNAME }}/snowcode-test
             sudo docker image prune -f
 
