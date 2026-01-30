@@ -20,8 +20,7 @@ public class TomcatCustomConfig {
 //                    connector.setProperty("selectorTimeout", "100");
 //                    connector.setProperty("tcpNoDelay", "true");
 
-                    // SO_LINGER 0: 즉시 RST를 보내고 소켓을 파괴
-                    connector.setProperty("socket.soLinger", "0");
+                    connector.setProperty("socket.soLingerOn", "true");
                 });
             }
         };
