@@ -20,7 +20,7 @@ public class TomcatCustomConfig {
 //                    connector.setProperty("selectorTimeout", "100");
 //                    connector.setProperty("tcpNoDelay", "true");
 
-                    connector.setProperty("socket.soLingerOn", "true");
+//                    connector.setProperty("socket.soLingerOn", "true");
                 });
             }
         };
