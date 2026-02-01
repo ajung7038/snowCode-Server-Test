@@ -63,7 +63,7 @@ jobs:
             sudo docker ps
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/snowcode-test
             sudo docker stop $(sudo docker ps --filter "publish=8080" --format "{{.ID}}") 2>/dev/null || true
-            docker run -d --ulimit nofile=8192:8192 -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/snowcode-test
+            docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/snowcode-test
             sudo docker image prune -f
 
       - name: Set up SSH key
