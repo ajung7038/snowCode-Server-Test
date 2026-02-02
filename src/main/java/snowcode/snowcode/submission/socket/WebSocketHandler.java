@@ -4,18 +4,14 @@ package snowcode.snowcode.submission.socket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import snowcode.snowcode.code.service.CodeExecutionService;
-import snowcode.snowcode.common.response.BasicResponse;
-import snowcode.snowcode.common.response.ErrorEntity;
 import snowcode.snowcode.common.response.ResponseUtil;
 import snowcode.snowcode.submission.dto.CodeRequestSocket;
-import snowcode.snowcode.submission.exception.SubmissionException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -43,82 +39,82 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     // 소켓 메세지 처리
-    @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        try {
-            String payload = message.getPayload();
-//            log.info("payload {}", payload);
-
-            CodeRequestSocket dto = mapper.readValue(payload, CodeRequestSocket.class);
-
-            // 로직 실행
-            String result = codeExecutionService.run(dto.code(), dto.input()).get();
-
-            // 성공 응답
-            String jsonResponse = mapper.writeValueAsString(ResponseUtil.success(result));
-            session.sendMessage(new TextMessage(jsonResponse));
-
-        } catch (SubmissionException e) {
-            log.error("Submission Exception({}) = {}, 코드 실행 실패", e.getCode(), e.getMessage());
-
-            ErrorEntity errorEntity = new ErrorEntity(e.getCode().toString(), e.getMessage());
-            BasicResponse<ErrorEntity> errorResponse = ResponseUtil.error(errorEntity);
-
-            String json = mapper.writeValueAsString(errorResponse);
-            session.sendMessage(new TextMessage(json));
-
-        } catch (AuthenticationException e) {
-            log.warn("Auth error: {}", e.getMessage());
-            ErrorEntity errorEntity = new ErrorEntity("인증에 실패하였습니다", e.getMessage());
-            BasicResponse<ErrorEntity> errorResponse = ResponseUtil.error(errorEntity);
-
-            String json = mapper.writeValueAsString(errorResponse);
-            session.sendMessage(new TextMessage(json));
-        } catch (Exception e) {
-            log.error("Unexpected error", e);
-            ErrorEntity errorEntity = new ErrorEntity("오류가 발생하였습니다.", e.getMessage());
-            BasicResponse<ErrorEntity> errorResponse = ResponseUtil.error(errorEntity);
-
-            String json = mapper.writeValueAsString(errorResponse);
-            session.sendMessage(new TextMessage(json));
-        }
-    }
-
 //    @Override
-//    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+//    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 //        try {
 //            String payload = message.getPayload();
+////            log.info("payload {}", payload);
+//
 //            CodeRequestSocket dto = mapper.readValue(payload, CodeRequestSocket.class);
 //
-//            // 비동기 처리
-//            CompletableFuture.supplyAsync(() -> {
-//                try {
-//                    return codeExecutionService.run(dto.code(), dto.input()).get();
-//                } catch (Exception e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }).thenAccept(result -> {
-//                // 2. 비즈니스 로직 완료 후 실행될 콜백 블록
-//                try {
-//                    // 세션 상태 확인
-//                    if (!session.isOpen()) {
-//                        log.error("ERROR: 세션이 이미 닫혀 있습니다. (SessionID: {})", session.getId());
-//                        return;
-//                    }
+//            // 로직 실행
+//            String result = codeExecutionService.run(dto.code(), dto.input()).get();
 //
-//                    // 성공 응답 생성 및 전송
-//                    String jsonResponse = mapper.writeValueAsString(ResponseUtil.success(result));
-//                    session.sendMessage(new TextMessage(jsonResponse));
+//            // 성공 응답
+//            String jsonResponse = mapper.writeValueAsString(ResponseUtil.success(result));
+//            session.sendMessage(new TextMessage(jsonResponse));
 //
-//                } catch (Exception e) {
-//                    log.error("메시지 전송 중 오류 발생", e);
-//                }
-//            });
+//        } catch (SubmissionException e) {
+//            log.error("Submission Exception({}) = {}, 코드 실행 실패", e.getCode(), e.getMessage());
 //
+//            ErrorEntity errorEntity = new ErrorEntity(e.getCode().toString(), e.getMessage());
+//            BasicResponse<ErrorEntity> errorResponse = ResponseUtil.error(errorEntity);
+//
+//            String json = mapper.writeValueAsString(errorResponse);
+//            session.sendMessage(new TextMessage(json));
+//
+//        } catch (AuthenticationException e) {
+//            log.warn("Auth error: {}", e.getMessage());
+//            ErrorEntity errorEntity = new ErrorEntity("인증에 실패하였습니다", e.getMessage());
+//            BasicResponse<ErrorEntity> errorResponse = ResponseUtil.error(errorEntity);
+//
+//            String json = mapper.writeValueAsString(errorResponse);
+//            session.sendMessage(new TextMessage(json));
 //        } catch (Exception e) {
-//            log.error("초기 데이터 파싱 오류", e);
+//            log.error("Unexpected error", e);
+//            ErrorEntity errorEntity = new ErrorEntity("오류가 발생하였습니다.", e.getMessage());
+//            BasicResponse<ErrorEntity> errorResponse = ResponseUtil.error(errorEntity);
+//
+//            String json = mapper.writeValueAsString(errorResponse);
+//            session.sendMessage(new TextMessage(json));
 //        }
 //    }
+
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+        try {
+            String payload = message.getPayload();
+            CodeRequestSocket dto = mapper.readValue(payload, CodeRequestSocket.class);
+
+            // 비동기 처리
+            CompletableFuture.supplyAsync(() -> {
+                try {
+                    return codeExecutionService.run(dto.code(), dto.input()).get();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }).thenAccept(result -> {
+                // 2. 비즈니스 로직 완료 후 실행될 콜백 블록
+                try {
+                    // 세션 상태 확인
+                    if (!session.isOpen()) {
+                        log.error("ERROR: 세션이 이미 닫혀 있습니다. (SessionID: {})", session.getId());
+                        return;
+                    }
+
+                    // 성공 응답 생성 및 전송
+                    String jsonResponse = mapper.writeValueAsString(ResponseUtil.success(result));
+                    session.sendMessage(new TextMessage(jsonResponse));
+
+                } catch (Exception e) {
+                    log.error("메시지 전송 중 오류 발생", e);
+                }
+            });
+
+        } catch (Exception e) {
+            log.error("초기 데이터 파싱 오류", e);
+        }
+    }
 
 
     // 소켓 연결 종료
