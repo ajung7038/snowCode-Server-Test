@@ -29,7 +29,7 @@ public class CodeExecutionService {
     // 작업 경로 고정
     private static final Path WORK_DIR = Paths.get(".");
 
-    @Async("taskExecutor") // 사용할 custom executor 지정
+    @Async("taskExecutor")
     public Future<String> run(String code, String testcase) throws IOException, InterruptedException {
         // 스레드 수행 내용 작성
         String random = UUID.randomUUID().toString();
