@@ -17,7 +17,7 @@ public class AsyncConfig {
         taskExecutor.setCorePoolSize(5);
         // 최대 풀 사이즈
         taskExecutor.setMaxPoolSize(10);
-        taskExecutor.setQueueCapacity(10);
+//        taskExecutor.setQueueCapacity(10);
         // 스레드 종료까지 시간
         taskExecutor.setAwaitTerminationSeconds(30); // 30초 기다려주고 안전하게 종료
         // 스레드 네임 프리픽스 설정
