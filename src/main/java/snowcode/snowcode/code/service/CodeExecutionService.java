@@ -51,7 +51,7 @@ public class CodeExecutionService {
 
             // 프로세스 실행 아웃풋 반환
             BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
-            return CompletableFuture.completedFuture(getOutput(br));
+            return CompletableFuture.completedFuture(getOutput(br)); // String을 CompletableFuture로 감쌈.
         } finally {
             deleteFile(filePath);
         }
