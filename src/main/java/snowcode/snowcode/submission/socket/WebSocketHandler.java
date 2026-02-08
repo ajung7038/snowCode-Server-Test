@@ -86,15 +86,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
             String payload = message.getPayload();
             CodeRequestSocket dto = mapper.readValue(payload, CodeRequestSocket.class);
 
-            // 비동기 처리
-            CompletableFuture.supplyAsync(() -> {
-                try {
-                    return codeExecutionService.run(dto.code(), dto.input()).get();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }).thenAccept(result -> {
-                // 2. 비즈니스 로직 완료 후 실행될 콜백 블록
+            codeExecutionService.run(dto.code(), dto.input()).thenAccept(result -> {
                 try {
                     // 세션 상태 확인
                     if (!session.isOpen()) {
