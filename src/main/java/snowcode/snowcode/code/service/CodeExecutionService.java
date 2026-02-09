@@ -30,8 +30,8 @@ public class CodeExecutionService {
     private static final Path WORK_DIR = Paths.get(".");
 
     @Async("taskExecutor")
-    public Future<String> run(String code, String testcase) throws IOException, InterruptedException {
-//    public CompletableFuture<String> run(String code, String testcase) throws IOException, InterruptedException {
+//    public Future<String> run(String code, String testcase) throws IOException, InterruptedException {
+    public CompletableFuture<String> run(String code, String testcase) throws IOException, InterruptedException {
         // 스레드 수행 내용 작성
         String random = UUID.randomUUID().toString();
         // 중복되지 않도록 UUID 값을 생성해 인풋 코드를 파일로 저장
