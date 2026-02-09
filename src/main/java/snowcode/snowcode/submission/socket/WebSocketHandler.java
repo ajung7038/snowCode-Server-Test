@@ -86,15 +86,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
             String payload = message.getPayload();
             CodeRequestSocket dto = mapper.readValue(payload, CodeRequestSocket.class);
 
-//            codeExecutionService.run(dto.code(), dto.input()).thenAccept(result -> {
+            codeExecutionService.run(dto.code(), dto.input()).thenAccept(result -> {
             // 비동기 처리
-            CompletableFuture.supplyAsync(() -> {
-                try {
-                    return codeExecutionService.run(dto.code(), dto.input()).get();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }).thenAccept(result -> {
+//            CompletableFuture.supplyAsync(() -> {
+//                try {
+//                    return codeExecutionService.run(dto.code(), dto.input()).get();
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }).thenAccept(result -> {
 
 
                 try {
