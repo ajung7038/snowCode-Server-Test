@@ -36,12 +36,13 @@ public class CodeExecutionService {
         String random = UUID.randomUUID().toString();
         // 중복되지 않도록 UUID 값을 생성해 인풋 코드를 파일로 저장
         Path filePath = createFile(random, code);
+        Process process = null;
         try {
 
             // 해당 소스코드 파일을 python3으로 실행하는 프로세스를 생성
             ProcessBuilder processBuilder = new ProcessBuilder("python3",
                     filePath.toString());
-            Process process = processBuilder.start();
+            process = processBuilder.start();
 
             try (BufferedWriter bw = new BufferedWriter(
                     new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8))) {
@@ -51,10 +52,16 @@ public class CodeExecutionService {
             process.waitFor();
 
             // 프로세스 실행 아웃풋 반환
-            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
-            return CompletableFuture.completedFuture(getOutput(br)); // String을 CompletableFuture로 감쌈.
+            String output;
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+                output = getOutput(br);
+            }
+            return CompletableFuture.completedFuture(output); // String을 CompletableFuture로 감쌈.
         } finally {
             deleteFile(filePath);
+            if (process != null) {
+                process.destroyForcibly();
+            }
         }
     }
 
@@ -104,7 +111,6 @@ public class CodeExecutionService {
             else sb.append("\n");
             sb.append(line);
         }
-        bufferedReader.close();
         return sb.toString();
     }
 
