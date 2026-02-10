@@ -56,6 +56,12 @@ public class CodeExecutionService {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
                 output = getOutput(br);
             }
+
+            try (BufferedReader errorReader = new BufferedReader(
+                    new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8))) {
+                while (errorReader.readLine() != null) {
+                }
+            }
             return CompletableFuture.completedFuture(output); // String을 CompletableFuture로 감쌈.
         } finally {
             deleteFile(filePath);
