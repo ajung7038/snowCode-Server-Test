@@ -52,22 +52,24 @@ public class CodeExecutionService {
             process.waitFor();
 
             // 프로세스 실행 아웃풋 반환
-            String output;
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
-                output = getOutput(br);
-            }
+//            String output;
+//            try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+//                output = getOutput(br);
+//            }
+            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8));
 
-            try (BufferedReader errorReader = new BufferedReader(
-                    new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8))) {
-                while (errorReader.readLine() != null) {
-                }
-            }
-            return CompletableFuture.completedFuture(output); // String을 CompletableFuture로 감쌈.
+//            try (BufferedReader errorReader = new BufferedReader(
+//                    new InputStreamReader(process.getErrorStream(), StandardCharsets.UTF_8))) {
+//                while (errorReader.readLine() != null) {
+//                }
+//            }
+//            return CompletableFuture.completedFuture(output); // String을 CompletableFuture로 감쌈.
+            return CompletableFuture.completedFuture(getOutput(br)); // String을 CompletableFuture로 감쌈.
         } finally {
             deleteFile(filePath);
-            if (process != null) {
-                process.destroyForcibly();
-            }
+//            if (process != null) {
+//                process.destroyForcibly();
+//            }
         }
     }
 
@@ -117,6 +119,7 @@ public class CodeExecutionService {
             else sb.append("\n");
             sb.append(line);
         }
+        bufferedReader.close();
         return sb.toString();
     }
 
