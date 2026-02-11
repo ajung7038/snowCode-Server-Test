@@ -14,10 +14,10 @@ public class AsyncConfig {
         // 테스크 수행시 스레드풀 사용
         ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
         // 유지할 풀 사이즈
-        taskExecutor.setCorePoolSize(5);
+        taskExecutor.setCorePoolSize(10);
         // 최대 풀 사이즈
-        taskExecutor.setMaxPoolSize(10);
-//        taskExecutor.setQueueCapacity(10);
+        taskExecutor.setMaxPoolSize(20);
+        taskExecutor.setQueueCapacity(20);
         // 스레드 종료까지 시간
         taskExecutor.setAwaitTerminationSeconds(30); // 30초 기다려주고 안전하게 종료
         // 스레드 네임 프리픽스 설정
