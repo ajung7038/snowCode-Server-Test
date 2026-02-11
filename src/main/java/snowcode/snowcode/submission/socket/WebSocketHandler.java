@@ -16,6 +16,7 @@ import snowcode.snowcode.submission.dto.CodeRequestSocket;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
 
 @Slf4j
 @Component
@@ -32,7 +33,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         // TODO Auto-generated method stub
-        log.info("{} 연결됨", session.getId());
+//        log.info("{} 연결됨", session.getId());
         sessions.add(session);
 //        String token = (String) session.getAttributes().get("token");
         session.sendMessage(new TextMessage("연결 완료"));
@@ -86,6 +87,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
             String payload = message.getPayload();
             CodeRequestSocket dto = mapper.readValue(payload, CodeRequestSocket.class);
 
+            // ForkJoinPool 상태 로깅
+            ForkJoinPool commonPool = ForkJoinPool.commonPool();
+            log.info("ForkJoinPool - Parallelism: {}, ActiveThreads: {}, RunningThreads: {}, QueuedSubmissions: {}, QueuedTasks: {}, StealCount: {}",
+                    commonPool.getParallelism(),        // core 크기
+                    commonPool.getActiveThreadCount(),   // 현재 작업 중인 스레드
+                    commonPool.getRunningThreadCount(),  // 실행 중인 스레드
+                    commonPool.getQueuedSubmissionCount(), // 대기 중인 작업
+                    commonPool.getQueuedTaskCount(),     // 큐에 있는 태스크
+                    commonPool.getStealCount());         // work-stealing 횟수
+
 //            codeExecutionService.run(dto.code(), dto.input()).thenAccept(result -> {
             // 비동기 처리
             CompletableFuture.supplyAsync(() -> {
@@ -122,7 +133,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     // 소켓 연결 종료
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        log.info("{} 연결 끊김", session.getId());
+//        log.info("{} 연결 끊김", session.getId());
         sessions.remove(session);
 //        session.sendMessage(new TextMessage("WebSocket 연결 종료"));
     }
